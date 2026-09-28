@@ -49,7 +49,7 @@ automacao-foursys/
 │   └── test_reminder_engine.py # Testes dos cálculos de expiração e alertas
 ├── dist/
 │   └── LembreteChaveM.exe  # Executável portátil para Windows (sem dependências)
-├── LembreteChaveM_v1.0.0.zip # Pacote pronto para compartilhamento via Teams/Email
+├── LembreteChaveM_v1.1.0.zip # Pacote pronto para compartilhamento via Teams/Email
 ├── build_exe.py            # Script PyInstaller para compilação multiplataforma
 ├── build_exe.bat           # Gerador automático do .exe em 1 clique (Windows)
 ├── run.bat                 # Atalho para executar via Python em segundo plano
@@ -62,7 +62,7 @@ automacao-foursys/
 ## 🛠️ Como Utilizar
 
 ### Compartilhar com Colegas de Equipe
-Envie o arquivo [LembreteChaveM_v1.0.0.zip](file:///c:/Projetos/automacao-foursys/LembreteChaveM_v1.0.0.zip). O colaborador só precisa extrair e dar dois cliques no `LembreteChaveM.exe`.
+Envie o arquivo [LembreteChaveM_v1.1.0.zip](file:///c:/Projetos/automacao-foursys/LembreteChaveM_v1.1.0.zip). O colaborador só precisa extrair e dar dois cliques no `LembreteChaveM.exe`.
 
 ### Rodar em Desenvolvimento (Python)
 ```bash

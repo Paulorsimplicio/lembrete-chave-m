@@ -4,7 +4,7 @@ from pathlib import Path
 
 APP_NAME = "Lembrete Chave M"
 APP_SUBTITLE = "Foursys | Controle de Acesso Bradesco"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
 
 # Regra de negócio
 DEFAULT_CYCLE_DAYS = 30   # Expiração técnica
