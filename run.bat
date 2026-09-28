@@ -1,0 +1,3 @@
+@echo off
+echo Iniciando Lembrete Chave M (Foursys)...
+start "" ".\.venv\Scripts\pythonw.exe" main.py

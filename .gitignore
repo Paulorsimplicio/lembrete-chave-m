@@ -1,0 +1,22 @@
+# Ambientes virtuais
+.venv/
+venv/
+ENV/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.spec
+
+# PyInstaller build outputs
+build/
+dist/
+
+# Dados locais do aplicativo (se criados no workspace)
+.foursys_chave_m/
+*.log
+
+# IDEs
+.vscode/
+.idea/
