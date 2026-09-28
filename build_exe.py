@@ -30,6 +30,7 @@ def build():
         "--hidden-import=pystray",
         "--hidden-import=plyer",
         "--hidden-import=src.holidays",
+        "--hidden-import=src.single_instance",
         # Exclusão de módulos pesados não utilizados para acelerar a descompactação
         "--exclude-module=unittest",
         "--exclude-module=pydoc",

@@ -11,6 +11,7 @@ from src.notifier import Notifier
 from src.reminder_engine import check_and_notify, calculate_status
 from src.tray import TrayManager
 from src.gui import MainWindow
+from src.single_instance import SingleInstanceManager
 
 # Configuração de Logs
 logging.basicConfig(
@@ -22,6 +23,13 @@ logger = logging.getLogger(__name__)
 
 class Application:
     def __init__(self, start_minimized: bool = False):
+        # 1. Verifica se já existe uma instância do gadget em execução
+        self.single_instance = SingleInstanceManager(
+            on_activate_callback=self._on_reactivate_requested
+        )
+        if self.single_instance.is_already_running():
+            sys.exit(0)
+
         self.start_minimized = start_minimized
         self.storage = Storage()
         self.notifier = Notifier()
@@ -70,6 +78,12 @@ class Application:
         """Chamado pela thread da bandeja para exibir a janela principal."""
         self.window.after(0, self.window.show_window)
 
+    def _on_reactivate_requested(self):
+        """Chamado quando outra tentativa de abertura do gadget for detectada."""
+        logger.info("Reativação da janela solicitada por nova tentativa de execução.")
+        if hasattr(self, "window") and self.window:
+            self.window.after(0, self.window.show_window)
+
     def _update_today_from_tray(self):
         """Chamado pelo menu da bandeja para marcar a troca hoje."""
         self.window.after(0, self.window.set_changed_today)
@@ -104,6 +118,11 @@ class Application:
         """Encerra a aplicação de forma limpa."""
         logger.info("Encerrando aplicação...")
         self.is_running = False
+        try:
+            if hasattr(self, "single_instance") and self.single_instance:
+                self.single_instance.close()
+        except Exception:
+            pass
         try:
             self.tray.stop()
         except Exception:
