@@ -2,6 +2,7 @@ import threading
 import logging
 from PIL import Image
 import pystray
+from pystray import MenuItem as item
 import webbrowser
 from src.config import ICON_PNG, APP_NAME, BRADESCO_PASSWORD_URL
 

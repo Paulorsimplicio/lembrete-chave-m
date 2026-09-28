@@ -49,25 +49,15 @@ class Application:
             on_update_today=self._update_today_from_tray,
             on_exit=self.shutdown
         )
+        self.tray.start()
+
+        # Checa alertas e agenda checagem periódica
+        self._perform_scheduled_check()
+        self._schedule_periodic_check()
 
         # Se solicitado para iniciar minimizado (ex: no boot do Windows)
         if self.start_minimized:
             self.window.withdraw()
-
-        # OTIMIZAÇÃO DE PERFORMANCE:
-        # A janela gráfica é exibida IMEDIATAMENTE na tela.
-        # Os serviços secundários (bandeja, checagem e timers) são carregados logo em seguida (50ms)
-        # sem travar ou atrasar a abertura da interface para o usuário.
-        self.window.after(50, self._lazy_init_services)
-
-    def _lazy_init_services(self):
-        """Inicializa serviços em segundo plano de forma assíncrona após a janela abrir."""
-        try:
-            self.tray.start()
-            self._perform_scheduled_check()
-            self._schedule_periodic_check()
-        except Exception as e:
-            logger.error(f"Erro ao inicializar serviços secundários: {e}")
 
     def _on_status_change(self, status_text: str):
         """Atualiza a mensagem de status exibida no menu da bandeja."""
