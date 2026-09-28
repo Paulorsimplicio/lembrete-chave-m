@@ -7,13 +7,18 @@ def build():
     print("Iniciando compilação do executável LembreteChaveM...")
 
     sep = ";" if sys.platform.startswith("win") else ":"
-    icon_arg = "assets/icon.ico" if sys.platform.startswith("win") else "assets/icon.png"
+    
+    if sys.platform.startswith("win"):
+        icon_arg = "assets/icon.ico"
+    elif sys.platform == "darwin":
+        icon_arg = "assets/icon.icns" if os.path.exists("assets/icon.icns") else "assets/icon.png"
+    else:
+        icon_arg = "assets/icon.png"
 
     # Argumentos do PyInstaller
     args = [
         "main.py",
         "--name=LembreteChaveM",
-        "--onefile",
         "--noconsole",
         f"--icon={icon_arg}",
         f"--add-data=assets{sep}assets",
@@ -25,13 +30,35 @@ def build():
         "--hidden-import=src.holidays",
     ]
 
+    # No Windows e Linux usamos --onefile para gerar um único binário executável
+    # No macOS usamos --windowed para gerar um pacote nativo LembreteChaveM.app
+    if sys.platform == "darwin":
+        args.append("--windowed")
+    else:
+        args.append("--onefile")
+
     PyInstaller.__main__.run(args)
+
+    # No macOS, compactar o .app preservando links simbólicos para distribuição
+    if sys.platform == "darwin":
+        app_path = os.path.join("dist", "LembreteChaveM.app")
+        zip_path = os.path.join("dist", "LembreteChaveM-MacOS.zip")
+        if os.path.exists(app_path):
+            import subprocess
+            try:
+                subprocess.run(["zip", "-r", "-y", "LembreteChaveM-MacOS.zip", "LembreteChaveM.app"], cwd="dist", check=True)
+                print(f"Pacote macOS .app compactado em: {zip_path}")
+            except Exception as e:
+                print(f"Aviso ao compactar .app no macOS: {e}")
 
     print("\n" + "=" * 60)
     print("Compilação concluída!")
     if sys.platform.startswith("win"):
         exe_path = os.path.abspath("dist/LembreteChaveM.exe")
         print(f"Executável gerado em: {exe_path}")
+    elif sys.platform == "darwin":
+        app_path = os.path.abspath("dist/LembreteChaveM.app")
+        print(f"Aplicativo macOS gerado em: {app_path}")
     else:
         bin_path = os.path.abspath("dist/LembreteChaveM")
         print(f"Binário gerado em: {bin_path}")

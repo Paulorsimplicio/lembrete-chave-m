@@ -54,5 +54,13 @@ def generate_icons():
     img.save(ico_path, format="ICO", sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
     print(f"Generated {ico_path}")
 
+    # Generate ICNS for macOS
+    try:
+        icns_path = os.path.join("assets", "icon.icns")
+        img.save(icns_path, format="ICNS")
+        print(f"Generated {icns_path}")
+    except Exception as e:
+        print(f"Aviso ao gerar ICNS: {e}")
+
 if __name__ == "__main__":
     generate_icons()

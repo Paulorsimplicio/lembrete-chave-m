@@ -16,8 +16,8 @@ jobs:
             artifact_name: LembreteChaveM-Windows.exe
             output_file: dist/LembreteChaveM.exe
           - os: macos-latest
-            artifact_name: LembreteChaveM-MacOS
-            output_file: dist/LembreteChaveM
+            artifact_name: LembreteChaveM-MacOS.zip
+            output_file: dist/LembreteChaveM-MacOS.zip
           - os: ubuntu-latest
             artifact_name: LembreteChaveM-Linux
             output_file: dist/LembreteChaveM
