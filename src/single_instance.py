@@ -1,8 +1,8 @@
 import socket
 import threading
 import logging
-import tkinter as tk
-from tkinter import messagebox
+import sys
+import os
 from typing import Optional, Callable
 
 logger = logging.getLogger(__name__)
@@ -11,8 +11,9 @@ PORT = 58421  # Porta local para controle de instância única
 
 
 class SingleInstanceManager:
-    def __init__(self, on_activate_callback: Optional[Callable] = None):
+    def __init__(self, on_activate_callback: Optional[Callable] = None, port: int = PORT):
         self.on_activate_callback = on_activate_callback
+        self.port = port
         self.server_socket: Optional[socket.socket] = None
         self.is_running = False
 
@@ -25,9 +26,15 @@ class SingleInstanceManager:
         """
         try:
             self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            # Tenta prender a porta local
-            self.server_socket.bind(("127.0.0.1", PORT))
+            
+            # No Linux/macOS (POSIX), SO_REUSEADDR permite reutilizar portas em TIME_WAIT
+            # sem permitir múltiplos listeners ativos. No Windows, não deve ser ativado.
+            if not sys.platform.startswith("win"):
+                self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+            self.server_socket.bind(("127.0.0.1", self.port))
             self.server_socket.listen(2)
+            self.server_socket.settimeout(0.5)
             self.is_running = True
             
             # Inicia thread de escuta para reativar a janela se o usuário tentar abrir de novo
@@ -36,14 +43,22 @@ class SingleInstanceManager:
             return False
 
         except OSError:
+            # Garante que o socket com falha seja fechado imediatamente
+            if self.server_socket:
+                try:
+                    self.server_socket.close()
+                except Exception:
+                    pass
+                self.server_socket = None
+
             # Porta ocupada -> Já existe outra instância rodando!
             logger.info("Outra instância do Lembrete Chave M já está em execução.")
             
             # Avisa a instância existente para restaurar a janela na tela
             try:
                 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client.settimeout(2.0)
-                client.connect(("127.0.0.1", PORT))
+                client.settimeout(1.0)
+                client.connect(("127.0.0.1", self.port))
                 client.sendall(b"SHOW")
                 client.close()
             except Exception as e:
@@ -59,17 +74,29 @@ class SingleInstanceManager:
         while self.is_running and self.server_socket:
             try:
                 conn, _ = self.server_socket.accept()
+            except (socket.timeout, OSError):
+                continue
+            except Exception:
+                break
+
+            try:
                 data = conn.recv(32)
                 conn.close()
                 if data == b"SHOW" and self.on_activate_callback:
                     logger.info("Recebido comando para restaurar janela existente.")
                     self.on_activate_callback()
             except Exception:
-                break
+                pass
 
     def _show_already_running_message(self):
         """Exibe popup informando que o gadget já está aberto."""
+        if sys.platform.startswith("linux") and not os.environ.get("DISPLAY"):
+            logger.info("Sem display gráfico (DISPLAY ausente); ignorando popup.")
+            return
+
         try:
+            import tkinter as tk
+            from tkinter import messagebox
             root = tk.Tk()
             root.withdraw()
             root.attributes("-topmost", True)
