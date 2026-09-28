@@ -50,11 +50,23 @@ class MainWindow(ctk.CTk):
         self.on_exit_callback = on_exit_callback
         self.on_status_change_callback = on_status_change_callback
 
-        # Configurações da Janela
+        # Configurações da Janela - Responsiva e adaptativa
         self.title(f"{APP_NAME} - {APP_SUBTITLE}")
-        self.geometry("520x730")
-        self.minsize(480, 700)
-        self.resizable(False, False)
+
+        # Habilita redimensionar e maximizar
+        self.resizable(True, True)
+        self.minsize(400, 480)
+
+        # Ajuste dinâmico automático com base na resolução da tela do usuário
+        screen_w = self.winfo_screenwidth()
+        screen_h = self.winfo_screenheight()
+
+        target_w = min(510, max(420, int(screen_w * 0.4)))
+        target_h = min(660, max(500, int(screen_h * 0.82)))
+
+        pos_x = max(0, (screen_w - target_w) // 2)
+        pos_y = max(0, (screen_h - target_h) // 2)
+        self.geometry(f"{target_w}x{target_h}+{pos_x}+{pos_y}")
 
         # Ícone da janela
         if sys.platform.startswith("win") and ICON_ICO.exists():
@@ -68,9 +80,14 @@ class MainWindow(ctk.CTk):
 
         # Monta os componentes
         self._build_header()
-        self._build_status_card()
-        self._build_action_card()
-        self._build_settings_card()
+
+        # Container com rolagem suave (evita cortes em qualquer tela ou escala de DPI)
+        self.scroll_container = ctk.CTkScrollableFrame(self, fg_color="transparent")
+        self.scroll_container.pack(fill="both", expand=True, padx=8, pady=(0, 4))
+
+        self._build_status_card(self.scroll_container)
+        self._build_action_card(self.scroll_container)
+        self._build_settings_card(self.scroll_container)
         self._build_footer()
 
         # Atualiza a interface com os dados persistidos
@@ -79,14 +96,14 @@ class MainWindow(ctk.CTk):
     def _build_header(self):
         """Cabeçalho com logo, título e badge de versão."""
         header_frame = ctk.CTkFrame(self, fg_color="transparent")
-        header_frame.pack(fill="x", padx=24, pady=(20, 10))
+        header_frame.pack(fill="x", padx=16, pady=(12, 6))
 
         # Logo / Ícone
         try:
             pil_img = Image.open(str(ICON_PNG))
-            ctk_icon = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=(48, 48))
+            ctk_icon = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=(40, 40))
             logo_label = ctk.CTkLabel(header_frame, image=ctk_icon, text="")
-            logo_label.pack(side="left", padx=(0, 14))
+            logo_label.pack(side="left", padx=(0, 12))
         except Exception:
             pass
 
@@ -96,7 +113,7 @@ class MainWindow(ctk.CTk):
         title_label = ctk.CTkLabel(
             title_container,
             text=APP_NAME,
-            font=ctk.CTkFont(size=22, weight="bold"),
+            font=ctk.CTkFont(size=20, weight="bold"),
             text_color="#f8fafc"
         )
         title_label.pack(anchor="w")
@@ -121,10 +138,10 @@ class MainWindow(ctk.CTk):
         )
         version_badge.pack(side="right", anchor="n")
 
-    def _build_status_card(self):
+    def _build_status_card(self, parent):
         """Card com o status atual de validade da chave M."""
-        self.status_card = ctk.CTkFrame(self, corner_radius=14, fg_color="#1e293b", border_width=1, border_color="#334155")
-        self.status_card.pack(fill="x", padx=24, pady=10)
+        self.status_card = ctk.CTkFrame(parent, corner_radius=12, fg_color="#1e293b", border_width=1, border_color="#334155")
+        self.status_card.pack(fill="x", padx=8, pady=6)
 
         # Status Pill (tag superior)
         self.status_pill = ctk.CTkLabel(
@@ -137,16 +154,16 @@ class MainWindow(ctk.CTk):
             padx=12,
             pady=5
         )
-        self.status_pill.pack(anchor="w", padx=20, pady=(16, 8))
+        self.status_pill.pack(anchor="w", padx=16, pady=(12, 6))
 
         # Destaque de dias restantes
         days_box = ctk.CTkFrame(self.status_card, fg_color="transparent")
-        days_box.pack(anchor="w", padx=20, pady=4)
+        days_box.pack(anchor="w", padx=16, pady=2)
 
         self.days_number_label = ctk.CTkLabel(
             days_box,
             text="--",
-            font=ctk.CTkFont(size=44, weight="bold"),
+            font=ctk.CTkFont(size=38, weight="bold"),
             text_color="#ffffff"
         )
         self.days_number_label.pack(side="left", padx=(0, 8))
@@ -195,18 +212,18 @@ class MainWindow(ctk.CTk):
         )
         alerts_info.pack(anchor="w", padx=20, pady=(6, 16))
 
-    def _build_action_card(self):
+    def _build_action_card(self, parent):
         """Card para registrar quando a senha foi trocada e link para o portal."""
-        action_card = ctk.CTkFrame(self, corner_radius=14, fg_color="#1e293b", border_width=1, border_color="#334155")
-        action_card.pack(fill="x", padx=24, pady=10)
+        action_card = ctk.CTkFrame(parent, corner_radius=12, fg_color="#1e293b", border_width=1, border_color="#334155")
+        action_card.pack(fill="x", padx=8, pady=6)
 
         action_title = ctk.CTkLabel(
             action_card,
             text="Acesso e Renovação da Chave M",
-            font=ctk.CTkFont(size=15, weight="bold"),
+            font=ctk.CTkFont(size=14, weight="bold"),
             text_color="#f8fafc"
         )
-        action_title.pack(anchor="w", padx=20, pady=(16, 10))
+        action_title.pack(anchor="w", padx=16, pady=(14, 8))
 
         # Botão: Acessar página de troca de senha no portal Bradesco
         btn_portal = ctk.CTkButton(
@@ -215,11 +232,11 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=13, weight="bold"),
             fg_color="#dc2626",
             hover_color="#b91c1c",
-            height=40,
-            corner_radius=10,
+            height=38,
+            corner_radius=8,
             command=self.open_bradesco_portal
         )
-        btn_portal.pack(fill="x", padx=20, pady=(0, 10))
+        btn_portal.pack(fill="x", padx=16, pady=(0, 8))
 
         # Botão Rápido: Troquei Hoje
         btn_today = ctk.CTkButton(
@@ -228,15 +245,15 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=13, weight="bold"),
             fg_color="#0284c7",
             hover_color="#0369a1",
-            height=38,
-            corner_radius=10,
+            height=36,
+            corner_radius=8,
             command=self.set_changed_today
         )
-        btn_today.pack(fill="x", padx=20, pady=(0, 12))
+        btn_today.pack(fill="x", padx=16, pady=(0, 10))
 
         # Opção manual de outra data
         manual_frame = ctk.CTkFrame(action_card, fg_color="transparent")
-        manual_frame.pack(fill="x", padx=20, pady=(0, 12))
+        manual_frame.pack(fill="x", padx=16, pady=(0, 10))
 
         lbl_manual = ctk.CTkLabel(
             manual_frame,
@@ -253,10 +270,10 @@ class MainWindow(ctk.CTk):
             input_row,
             placeholder_text="Ex: 28/09/2026",
             font=ctk.CTkFont(size=13),
-            height=36,
+            height=34,
             corner_radius=8
         )
-        self.date_entry.pack(side="left", fill="x", expand=True, padx=(0, 10))
+        self.date_entry.pack(side="left", fill="x", expand=True, padx=(0, 8))
 
         btn_save_custom = ctk.CTkButton(
             input_row,
@@ -264,8 +281,8 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=12, weight="bold"),
             fg_color="#334155",
             hover_color="#475569",
-            height=36,
-            width=100,
+            height=34,
+            width=90,
             corner_radius=8,
             command=self.save_custom_date
         )
@@ -278,12 +295,12 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=12),
             text_color="#10b981"
         )
-        self.feedback_label.pack(anchor="w", padx=20, pady=(0, 12))
+        self.feedback_label.pack(anchor="w", padx=16, pady=(0, 10))
 
-    def _build_settings_card(self):
+    def _build_settings_card(self, parent):
         """Card com preferências locais do funcionário."""
-        settings_card = ctk.CTkFrame(self, corner_radius=14, fg_color="#1e293b", border_width=1, border_color="#334155")
-        settings_card.pack(fill="x", padx=24, pady=10)
+        settings_card = ctk.CTkFrame(parent, corner_radius=12, fg_color="#1e293b", border_width=1, border_color="#334155")
+        settings_card.pack(fill="x", padx=8, pady=6)
 
         # Switch: Iniciar com o computador
         self.autostart_switch = ctk.CTkSwitch(
@@ -292,7 +309,7 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=12),
             command=self.toggle_autostart
         )
-        self.autostart_switch.pack(anchor="w", padx=20, pady=(16, 8))
+        self.autostart_switch.pack(anchor="w", padx=16, pady=(14, 6))
         if is_autostart_enabled() or self.storage.get_autostart():
             self.autostart_switch.select()
         else:
@@ -305,7 +322,7 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=12),
             command=self.toggle_minimize_to_tray
         )
-        self.tray_switch.pack(anchor="w", padx=20, pady=(4, 14))
+        self.tray_switch.pack(anchor="w", padx=16, pady=(4, 14))
         if self.storage.get_minimize_to_tray():
             self.tray_switch.select()
         else:
@@ -314,7 +331,7 @@ class MainWindow(ctk.CTk):
     def _build_footer(self):
         """Botões inferiores de utilidade."""
         footer_frame = ctk.CTkFrame(self, fg_color="transparent")
-        footer_frame.pack(fill="x", padx=24, pady=(10, 20))
+        footer_frame.pack(fill="x", padx=16, pady=(6, 12))
 
         btn_test_notif = ctk.CTkButton(
             footer_frame,
