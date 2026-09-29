@@ -15,7 +15,17 @@
         <img src="/icon.png" alt="Lembrete Chave M" class="brand-logo">
         <span class="brand-title">Lembrete Chave M</span>
       </a>
-      <span class="badge-corp">FourSys Internal</span>
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <a 
+          href="/Manual_de_Uso.html" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style="color: #38bdf8; font-size: 0.85rem; font-weight: 600; text-decoration: none; padding: 0.35rem 0.75rem; border-radius: 8px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2);"
+        >
+          📖 Manual de Uso
+        </a>
+        <span class="badge-corp">FourSys Internal</span>
+      </div>
     </div>
   </header>
 
@@ -23,7 +33,7 @@
   <section class="hero">
     <div class="version-pill">
       <span class="status-dot"></span>
-      <span id="version-text">Versão v1.2.1 disponível</span>
+      <span id="version-text">Versão v1.3.0 disponível</span>
     </div>
 
     <h1 class="hero-title">
@@ -34,14 +44,25 @@
       Assistente leve e inteligente para desktop. Notifica nos horários ideais do expediente, respeita feriados e funciona em segundo plano sem atrapalhar seu fluxo.
     </p>
 
-    <!-- CTA Principal com Detecção de SO -->
+    <!-- CTA Principal com Detecção de SO e Manual -->
     <div class="cta-wrapper">
-      <a href="https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.exe" class="btn-primary" id="btn-primary-download">
-        <span id="primary-icon" style="font-size: 1.4rem;">🪟</span>
-        <span id="primary-title">Baixar para Windows</span>
-      </a>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+        <a href="https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.zip" class="btn-primary" id="btn-primary-download">
+          <span id="primary-icon" style="font-size: 1.4rem;">🪟</span>
+          <span id="primary-title">Baixar para Windows</span>
+        </a>
+        <a 
+          href="/Manual_de_Uso.html" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          style="display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle); color: #f8fafc; padding: 1.1rem 1.6rem; border-radius: 14px; font-size: 1rem; font-weight: 600; text-decoration: none;"
+        >
+          <span>📖</span>
+          <span>Manual Online</span>
+        </a>
+      </div>
       <span class="os-detected-subtext">
-        Detectado para o seu sistema: <strong id="primary-format">Executável portátil (.exe)</strong>
+        Detectado para o seu sistema: <strong id="primary-format">Pacote .zip (Executável .exe + Manual)</strong>
       </span>
     </div>
   </section>
@@ -52,21 +73,21 @@
     <div class="platforms-grid">
       
       <!-- Card Windows -->
-      <a href="https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.exe" class="glass-panel platform-card" id="download-windows">
+      <a href="https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.zip" class="glass-panel platform-card" id="download-windows">
         <div>
           <div class="platform-header">
             <div class="platform-icon-box">🪟</div>
             <div>
               <div class="platform-name">Windows</div>
-              <div class="platform-format">Executável .exe portátil</div>
+              <div class="platform-format">Pacote .zip (.exe + Manual)</div>
             </div>
           </div>
           <p style="font-size: 0.85rem; color: var(--text-muted);">
-            Compatível com Windows 10 e 11 (64 bits). Dispensa instalador.
+            Compatível com Windows 10 e 11 (64 bits). Inclui executável e Manual de Uso.
           </p>
         </div>
         <div class="platform-action">
-          <span>Baixar arquivo .exe</span>
+          <span>Baixar pacote com Manual</span>
           <span>↓</span>
         </div>
       </a>
@@ -78,27 +99,27 @@
             <div class="platform-icon-box">🍏</div>
             <div>
               <div class="platform-name">macOS</div>
-              <div class="platform-format">Pacote .zip (.app nativo)</div>
+              <div class="platform-format">Pacote .zip (.app + Manual)</div>
             </div>
           </div>
           <p style="font-size: 0.85rem; color: var(--text-muted);">
-            Compatível com arquiteturas Apple Silicon (M1/M2/M3/M4) e Intel.
+            Compatível com arquiteturas Apple Silicon (M1/M2/M3/M4) e Intel. Inclui Manual de Uso.
           </p>
         </div>
         <div class="platform-action">
-          <span>Baixar arquivo .zip</span>
+          <span>Baixar pacote com Manual</span>
           <span>↓</span>
         </div>
       </a>
 
       <!-- Card Linux -->
-      <a href="https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Linux" class="glass-panel platform-card" id="download-linux">
+      <a href="https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Linux.zip" class="glass-panel platform-card" id="download-linux">
         <div>
           <div class="platform-header">
             <div class="platform-icon-box">🐧</div>
             <div>
               <div class="platform-name">Linux</div>
-              <div class="platform-format">Binário standalone x86_64</div>
+              <div class="platform-format">Pacote .zip (Binário + Manual)</div>
             </div>
           </div>
           <p style="font-size: 0.85rem; color: var(--text-muted);">
@@ -106,7 +127,7 @@
           </p>
         </div>
         <div class="platform-action">
-          <span>Baixar binário Linux</span>
+          <span>Baixar pacote com Manual</span>
           <span>↓</span>
         </div>
       </a>
@@ -276,20 +297,20 @@
       if (ua.includes('mac')) {
         primaryIcon.textContent = '🍏';
         primaryTitle.textContent = 'Baixar para macOS';
-        primaryFormat.textContent = 'Pacote .zip (LembreteChaveM.app)';
+        primaryFormat.textContent = 'Pacote .zip (.app + Manual de Uso)';
         primaryBtn.href = 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-MacOS.zip';
         switchTab('macos');
       } else if (ua.includes('linux')) {
         primaryIcon.textContent = '🐧';
         primaryTitle.textContent = 'Baixar para Linux';
-        primaryFormat.textContent = 'Binário executável (x86_64)';
-        primaryBtn.href = 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Linux';
+        primaryFormat.textContent = 'Pacote .zip (Binário + Manual de Uso)';
+        primaryBtn.href = 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Linux.zip';
         switchTab('linux');
       } else {
         primaryIcon.textContent = '🪟';
         primaryTitle.textContent = 'Baixar para Windows';
-        primaryFormat.textContent = 'Executável portátil (.exe)';
-        primaryBtn.href = 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.exe';
+        primaryFormat.textContent = 'Pacote .zip (Executável .exe + Manual de Uso)';
+        primaryBtn.href = 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.zip';
         switchTab('windows');
       }
     })();

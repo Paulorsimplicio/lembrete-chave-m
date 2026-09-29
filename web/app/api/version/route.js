@@ -8,8 +8,8 @@ export async function GET() {
   
   const defaultAssets = {
     windows: {
-      name: 'LembreteChaveM-Windows.exe',
-      url: `https://github.com/${repo}/releases/latest/download/LembreteChaveM-Windows.exe`,
+      name: 'LembreteChaveM-Windows.zip',
+      url: `https://github.com/${repo}/releases/latest/download/LembreteChaveM-Windows.zip`,
       os: 'Windows'
     },
     macos: {
@@ -18,9 +18,13 @@ export async function GET() {
       os: 'macOS'
     },
     linux: {
-      name: 'LembreteChaveM-Linux',
-      url: `https://github.com/${repo}/releases/latest/download/LembreteChaveM-Linux`,
+      name: 'LembreteChaveM-Linux.zip',
+      url: `https://github.com/${repo}/releases/latest/download/LembreteChaveM-Linux.zip`,
       os: 'Linux'
+    },
+    manual: {
+      name: 'Manual_de_Uso.html',
+      url: `/Manual_de_Uso.html`
     }
   };
 
@@ -54,21 +58,30 @@ export async function GET() {
 
     if (Array.isArray(data.assets)) {
       data.assets.forEach(asset => {
-        if (asset.name.toLowerCase().includes('windows') || asset.name.endsWith('.exe')) {
-          assets.windows = {
+        const nameLower = asset.name.toLowerCase();
+        if (nameLower.includes('manual')) {
+          assets.manual = {
             name: asset.name,
-            url: asset.browser_download_url,
-            size: asset.size,
-            os: 'Windows'
+            url: asset.browser_download_url
           };
-        } else if (asset.name.toLowerCase().includes('mac') || asset.name.endsWith('.dmg') || asset.name.endsWith('.zip')) {
+        } else if (nameLower.includes('windows')) {
+          // Prioriza o pacote .zip com manual se disponível
+          if (nameLower.endsWith('.zip') || !assets.windows.name.endsWith('.zip')) {
+            assets.windows = {
+              name: asset.name,
+              url: asset.browser_download_url,
+              size: asset.size,
+              os: 'Windows'
+            };
+          }
+        } else if (nameLower.includes('mac')) {
           assets.macos = {
             name: asset.name,
             url: asset.browser_download_url,
             size: asset.size,
             os: 'macOS'
           };
-        } else if (asset.name.toLowerCase().includes('linux')) {
+        } else if (nameLower.includes('linux')) {
           assets.linux = {
             name: asset.name,
             url: asset.browser_download_url,

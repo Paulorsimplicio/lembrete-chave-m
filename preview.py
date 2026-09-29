@@ -18,6 +18,8 @@ class PreviewHandler(http.server.SimpleHTTPRequestHandler):
             return os.path.join(WEB_DIR, 'public', 'icon.png')
         elif clean_path.startswith('/favicon.ico'):
             return os.path.join(WEB_DIR, 'public', 'favicon.ico')
+        elif clean_path.startswith('/Manual_de_Uso.html'):
+            return os.path.join(WEB_DIR, 'public', 'Manual_de_Uso.html')
         elif clean_path.startswith('/app/'):
             rel = clean_path.replace('/app/', '')
             return os.path.join(WEB_DIR, 'app', rel)

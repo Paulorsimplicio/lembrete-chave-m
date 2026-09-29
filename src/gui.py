@@ -24,9 +24,8 @@ from src.config import (
     BRADESCO_PASSWORD_URL,
 )
 from src.storage import Storage
-from src.reminder_engine import calculate_status
+from src.reminder_engine import calculate_status, MESSAGES_BY_THRESHOLD
 from src.notifier import Notifier
-from src.autostart import set_autostart, is_autostart_enabled
 
 logger = logging.getLogger(__name__)
 
@@ -50,19 +49,17 @@ class MainWindow(ctk.CTk):
         self.on_exit_callback = on_exit_callback
         self.on_status_change_callback = on_status_change_callback
 
-        # Configurações da Janela - Responsiva e adaptativa
+        # Configurações da Janela - Limpa, sem barra de rolagem
         self.title(f"{APP_NAME} - {APP_SUBTITLE}")
 
-        # Habilita redimensionar e maximizar
         self.resizable(True, True)
-        self.minsize(400, 480)
+        self.minsize(450, 520)
 
-        # Ajuste dinâmico automático com base na resolução da tela do usuário
+        # Centralizado na tela
         screen_w = self.winfo_screenwidth()
         screen_h = self.winfo_screenheight()
-
-        target_w = min(510, max(420, int(screen_w * 0.4)))
-        target_h = min(660, max(500, int(screen_h * 0.82)))
+        target_w = 480
+        target_h = 540
 
         pos_x = max(0, (screen_w - target_w) // 2)
         pos_y = max(0, (screen_h - target_h) // 2)
@@ -81,13 +78,12 @@ class MainWindow(ctk.CTk):
         # Monta os componentes
         self._build_header()
 
-        # Container com rolagem suave (evita cortes em qualquer tela ou escala de DPI)
-        self.scroll_container = ctk.CTkScrollableFrame(self, fg_color="transparent")
-        self.scroll_container.pack(fill="both", expand=True, padx=8, pady=(0, 4))
+        # Container principal limpo (sem barra de rolagem)
+        self.main_container = ctk.CTkFrame(self, fg_color="transparent")
+        self.main_container.pack(fill="both", expand=True, padx=8, pady=(0, 4))
 
-        self._build_status_card(self.scroll_container)
-        self._build_action_card(self.scroll_container)
-        self._build_settings_card(self.scroll_container)
+        self._build_status_card(self.main_container)
+        self._build_action_card(self.main_container)
         self._build_footer()
 
         # Atualiza a interface com os dados persistidos
@@ -297,37 +293,6 @@ class MainWindow(ctk.CTk):
         )
         self.feedback_label.pack(anchor="w", padx=16, pady=(0, 10))
 
-    def _build_settings_card(self, parent):
-        """Card com preferências locais do funcionário."""
-        settings_card = ctk.CTkFrame(parent, corner_radius=12, fg_color="#1e293b", border_width=1, border_color="#334155")
-        settings_card.pack(fill="x", padx=8, pady=6)
-
-        # Switch: Iniciar com o computador
-        self.autostart_switch = ctk.CTkSwitch(
-            settings_card,
-            text="Iniciar automaticamente com o computador",
-            font=ctk.CTkFont(size=12),
-            command=self.toggle_autostart
-        )
-        self.autostart_switch.pack(anchor="w", padx=16, pady=(14, 6))
-        if is_autostart_enabled() or self.storage.get_autostart():
-            self.autostart_switch.select()
-        else:
-            self.autostart_switch.deselect()
-
-        # Switch: Minimizar para bandeja
-        self.tray_switch = ctk.CTkSwitch(
-            settings_card,
-            text="Manter ativo na bandeja do sistema ao fechar (X)",
-            font=ctk.CTkFont(size=12),
-            command=self.toggle_minimize_to_tray
-        )
-        self.tray_switch.pack(anchor="w", padx=16, pady=(4, 14))
-        if self.storage.get_minimize_to_tray():
-            self.tray_switch.select()
-        else:
-            self.tray_switch.deselect()
-
     def _build_footer(self):
         """Botões inferiores de utilidade."""
         footer_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -344,7 +309,21 @@ class MainWindow(ctk.CTk):
             corner_radius=8,
             command=self.test_notification
         )
-        btn_test_notif.pack(side="left", padx=(0, 10))
+        btn_test_notif.pack(side="left", padx=(0, 8))
+
+        btn_manual = ctk.CTkButton(
+            footer_frame,
+            text="📖 Manual",
+            font=ctk.CTkFont(size=12),
+            fg_color="#1e293b",
+            hover_color="#334155",
+            text_color="#cbd5e1",
+            width=80,
+            height=34,
+            corner_radius=8,
+            command=self.open_manual
+        )
+        btn_manual.pack(side="left")
 
         btn_minimize = ctk.CTkButton(
             footer_frame,
@@ -487,24 +466,64 @@ class MainWindow(ctk.CTk):
                 text_color=COLOR_WARNING
             )
 
-    def toggle_autostart(self):
-        """Alterna a inicialização automática com o sistema."""
-        enabled = self.autostart_switch.get() == 1
-        self.storage.set_autostart(enabled)
-        success = set_autostart(enabled)
-        if not success:
-            logger.warning("Falha ao registrar autostart no sistema operacional.")
-
-    def toggle_minimize_to_tray(self):
-        """Alterna o comportamento do botão fechar (X)."""
-        enabled = self.tray_switch.get() == 1
-        self.storage.set_minimize_to_tray(enabled)
-
     def test_notification(self):
-        """Dispara uma notificação nativa de teste."""
-        self.notifier.send_test_notification()
+        """Dispara a notificação correspondente à situação atual de expiração da chave M do funcionário."""
+        last_date = self.storage.get_last_change_date()
+        cycle_days = self.storage.get_cycle_days()
+        status = calculate_status(last_date, cycle_days=cycle_days)
+
+        if not status["has_date"]:
+            title = "Lembrete Chave M | Configuração Pendente"
+            message = "Nenhuma data registrada. Abra o aplicativo para cadastrar a data da última troca de senha."
+        else:
+            days = status["days_remaining"]
+            deadline_str = status["effective_deadline"].strftime("%d/%m/%Y")
+            if days < 0:
+                title = "🚨 URGENTE: Chave M Vencida!"
+                message = f"O prazo útil de troca venceu há {abs(days)} dia(s) (limite: {deadline_str})! Troque imediatamente no portal Bradesco."
+            elif days == 0:
+                title = "🚨 ÚLTIMO DIA ÚTIL: Troque Hoje!"
+                message = f"Hoje ({deadline_str}) é o último dia útil permitido para trocar sua chave M! Acesse o portal Bradesco agora."
+            elif days in MESSAGES_BY_THRESHOLD:
+                alert_info = MESSAGES_BY_THRESHOLD[days]
+                title = alert_info["title"]
+                message = alert_info["message"]
+            elif days == 4:
+                title = "Aviso Chave M (4 dias úteis)"
+                message = f"Faltam 4 dias úteis para a data limite de troca da chave M ({deadline_str}). Planeje a troca."
+            else:
+                title = f"Lembrete Chave M | Status Seguro ({days} dias)"
+                message = f"Sua chave M está segura por mais {days} dias úteis (data limite útil: {deadline_str})."
+
+        self.notifier.notify(title=title, message=message, timeout=12)
         self.feedback_label.configure(
-            text="🔔 Notificação de teste enviada!",
+            text=f"🔔 Notificação enviada: {title}",
+            text_color="#38bdf8"
+        )
+
+    def open_manual(self):
+        """Abre o manual de uso do aplicativo no navegador."""
+        manual_candidates = [
+            Path(__file__).resolve().parent.parent / "Manual_de_Uso.html",
+            Path(sys.executable).parent / "Manual_de_Uso.html",
+            Path.cwd() / "Manual_de_Uso.html",
+        ]
+        for candidate in manual_candidates:
+            if candidate.exists():
+                try:
+                    webbrowser.open(candidate.as_uri())
+                    self.feedback_label.configure(
+                        text="📖 Manual de uso aberto no navegador!",
+                        text_color="#38bdf8"
+                    )
+                    return
+                except Exception as e:
+                    logger.error(f"Erro ao abrir manual local: {e}")
+
+        # Fallback online
+        webbrowser.open("https://github.com/Paulorsimplicio/lembrete-chave-m#readme")
+        self.feedback_label.configure(
+            text="📖 Abrindo documentação online...",
             text_color="#38bdf8"
         )
 
@@ -525,10 +544,5 @@ class MainWindow(ctk.CTk):
         self.refresh_ui()
 
     def on_window_close(self):
-        """Ação ao clicar no botão fechar (X)."""
-        if self.storage.get_minimize_to_tray():
-            self.minimize_to_tray()
-        else:
-            if self.on_exit_callback:
-                self.on_exit_callback()
-            self.destroy()
+        """Ação ao clicar no botão fechar (X): sempre minimiza para a bandeja como padrão."""
+        self.minimize_to_tray()

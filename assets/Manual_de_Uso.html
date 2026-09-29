@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Uso — Lembrete Chave M | FourSys</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    :root {
+      --bg: #0b0f19;
+      --bg-card: #131b2e;
+      --bg-card-alt: #1a243d;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.35);
+      --primary: #4f46e5;
+      --primary-light: #818cf8;
+      --cyan: #06b6d4;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid var(--border-accent);
+      color: var(--primary-light);
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-top: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 2.2rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-light);
+      margin: 1.4rem 0 0.5rem;
+    }
+
+    p { margin-bottom: 1rem; color: #cbd5e1; }
+
+    ul, ol {
+      margin: 0.5rem 0 1.2rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li { margin-bottom: 0.4rem; }
+
+    .highlight-card {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--cyan);
+      border-radius: 12px;
+      padding: 1.2rem 1.4rem;
+      margin: 1.5rem 0;
+    }
+
+    .highlight-card.alert {
+      border-left-color: var(--amber);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .highlight-card.danger {
+      border-left-color: var(--rose);
+      background: rgba(244, 63, 94, 0.08);
+    }
+
+    .code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      color: #38bdf8;
+    }
+
+    .code-block {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border);
+      padding: 0.9rem 1.2rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      color: #38bdf8;
+      margin: 0.75rem 0 1.25rem;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.03);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .tag-safe { color: var(--emerald); font-weight: 700; }
+    .tag-warning { color: var(--amber); font-weight: 700; }
+    .tag-danger { color: var(--rose); font-weight: 700; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media print {
+      body { background: #ffffff; color: #1e293b; padding: 0; }
+      .container { background: #ffffff; border: none; box-shadow: none; padding: 0; }
+      h1, h2, h3 { color: #0f172a; -webkit-text-fill-color: initial; }
+      .highlight-card { background: #f8fafc; border: 1px solid #cbd5e1; }
+      th, td { border-color: #cbd5e1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <span class="badge">FourSys | Documentação Oficial</span>
+        <h1>Lembrete Chave M</h1>
+        <p class="subtitle">Guia Completo de Instalação, Funcionamento e Boas Práticas</p>
+      </div>
+      <div>
+        <span class="badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: var(--emerald);">v1.3.0</span>
+      </div>
+    </header>
+
+    <!-- 1. Objetivo -->
+    <section>
+      <h2>🎯 1. Visão Geral e Objetivo</h2>
+      <p>
+        O <strong>Lembrete Chave M</strong> é um assistente leve para computadores corporativos desenvolvido para garantir que nenhum colaborador da FourSys alocado em clientes (como o Bradesco) tenha sua conta ou Chave M bloqueada por esquecimento na renovação da senha periódica.
+      </p>
+      <div class="highlight-card">
+        <strong>Por que a ferramenta existe?</strong>
+        <p style="margin-top: 0.4rem; margin-bottom: 0;">
+          A senha da Chave M expira obrigatoriamente a cada <strong>30 dias</strong>. Se expirar, o colaborador fica impossibilitado de acessar os sistemas e precisa abrir chamado com a equipe de TI, gerando perda de tempo e retrabalho. O aplicativo automatiza esse controle para você.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. Como Funciona a Regra de Negócio -->
+    <section>
+      <h2>🧠 2. Como Funciona a Contagem Inteligente</h2>
+      <p>O aplicativo não faz uma simples contagem regressiva de dias; ele aplica as regras reais do expediente corporativo:</p>
+      
+      <ul>
+        <li><strong>Margem de Segurança (Dia 29):</strong> Embora a expiração técnica seja de 30 dias, o prazo limite estipulado pelo aplicativo é no <strong>29º dia</strong>, garantindo que você nunca deixe para o último minuto.</li>
+        <li><strong>Antecipação Automática de Feriados e Fins de Semana:</strong> Se o 29º dia cair em um sábado, domingo ou feriado nacional brasileiro (como Carnaval, Tiradentes, Natal, etc.), a ferramenta <strong>antecipa automaticamente</strong> o prazo para o dia útil anterior!</li>
+        <li><strong>Cálculo de Dias Úteis:</strong> O contador exibe sempre a quantidade real de dias úteis restantes até a data limite.</li>
+      </ul>
+    </section>
+
+    <!-- 3. Instalação e Execução -->
+    <section>
+      <h2>💻 3. Como Baixar e Usar (Sem Privilégios de Administrador)</h2>
+      <p>O aplicativo é 100% portátil. <strong>Não é necessário ter direitos de administrador</strong> da máquina para utilizá-lo.</p>
+
+      <h3>No Windows:</h3>
+      <ol>
+        <li>Baixe o arquivo compactado <span class="code">LembreteChaveM-Windows.zip</span>.</li>
+        <li>Extraia os arquivos para qualquer pasta de sua preferência (ex: em <em>Documentos</em> ou na sua pasta de usuário).</li>
+        <li>Dê dois cliques no arquivo <span class="code">LembreteChaveM.exe</span>.</li>
+        <li>Pronto! O aplicativo abrirá imediatamente e já criará o atalho para iniciar sozinho nas próximas vezes que você ligar o computador.</li>
+      </ol>
+
+      <h3>No macOS:</h3>
+      <ol>
+        <li>Baixe o pacote <span class="code">LembreteChaveM-MacOS.zip</span> e descompacte.</li>
+        <li>Arraste o <span class="code">LembreteChaveM.app</span> para a sua pasta de <em>Aplicativos</em>.</li>
+        <li>Na primeira abertura, se o sistema exibir aviso de desenvolvedor não verificado, clique com o botão direito sobre o app e escolha <strong>"Abrir"</strong>.</li>
+      </ol>
+
+      <h3>No Linux:</h3>
+      <ol>
+        <li>Baixe o binário <span class="code">LembreteChaveM-Linux</span>.</li>
+        <li>Abra o terminal e dê permissão de execução:
+          <span class="code-block">chmod +x LembreteChaveM-Linux</span>
+        </li>
+        <li>Execute com:
+          <span class="code-block">./LembreteChaveM-Linux</span>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 4. Padrões Corporativos -->
+    <section>
+      <h2>⚙️ 4. Padrões Corporativos Automáticos</h2>
+      <p>Para garantir que o colaborador não precise se preocupar com ajustes técnicos manuais, o aplicativo vem com os seguintes comportamentos fixos:</p>
+
+      <div class="highlight-card">
+        <strong>🚀 Inicialização com o Computador:</strong>
+        <p style="margin-top: 0.3rem;">O aplicativo inicia automaticamente junto com o sistema operacional de forma silenciosa, sem exigir nenhuma configuração do usuário.</p>
+      </div>
+
+      <div class="highlight-card">
+        <strong>📥 Execução Silenciosa na Bandeja (System Tray):</strong>
+        <p style="margin-top: 0.3rem;">Ao clicar no botão de fechar <strong>(X)</strong> ou em <strong>"Ocultar na Bandeja"</strong>, o programa não é encerrado. Ele fica recolhido discretamente ao lado do relógio do Windows, consumindo memória mínima e monitorando em segundo plano.</p>
+      </div>
+
+      <p><strong>Como abrir a janela novamente:</strong> Basta dar dois cliques no ícone do Lembrete Chave M perto do relógio.</p>
+      <p><strong>Como encerrar de verdade:</strong> Clique com o botão direito no ícone da bandeja e selecione <em>"Sair do Lembrete"</em>.</p>
+    </section>
+
+    <!-- 5. Uso no Dia a Dia -->
+    <section>
+      <h2>📅 5. Uso no Dia a Dia</h2>
+      <ol>
+        <li>
+          <strong>Quando você acabou de trocar a senha no portal Bradesco:</strong><br>
+          Abra o gadget e clique no botão verde <strong>"✅ Troquei minha chave hoje"</strong>. O ciclo será reiniciado imediatamente para os próximos 30 dias.
+        </li>
+        <li>
+          <strong>Se você trocou em dias anteriores:</strong><br>
+          Digite a data no campo <em>"Ou digite outra data (DD/MM/AAAA)"</em> (ex: <span class="code">20/09/2026</span>) e clique em <strong>"Salvar Data"</strong>.
+        </li>
+        <li>
+          <strong>Acesso rápido ao portal de troca:</strong><br>
+          Clique no link azul <em>"🔗 Acessar portal oficial de troca de senha Bradesco"</em> para abrir a página oficial do SailPoint IdentityNow no navegador.
+        </li>
+      </ol>
+    </section>
+
+    <!-- 6. Notificações -->
+    <section>
+      <h2>🔔 6. Sistema de Notificações e Teste Real</h2>
+      <p>O aplicativo dispara notificações na área de trabalho nos momentos mais importantes:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Dias Restantes</th>
+            <th>Nível</th>
+            <th>Mensagem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>5 dias úteis</strong></td>
+            <td><span class="tag-warning">Atenção</span></td>
+            <td>Planeje a troca com tranquilidade nos próximos dias.</td>
+          </tr>
+          <tr>
+            <td><strong>3 dias úteis</strong></td>
+            <td><span class="tag-warning">Aviso</span></td>
+            <td>Troque antes que o prazo se aproxime do fim.</td>
+          </tr>
+          <tr>
+            <td><strong>2 dias úteis</strong></td>
+            <td><span class="tag-danger">Urgente</span></td>
+            <td>Risco de bloqueio iminente.</td>
+          </tr>
+          <tr>
+            <td><strong>1 dia útil</strong></td>
+            <td><span class="tag-danger">Alerta Máximo</span></td>
+            <td>Amanhã é o último dia útil! Troque hoje.</td>
+          </tr>
+          <tr>
+            <td><strong>Dia 0 (Limite)</strong></td>
+            <td><span class="tag-danger">🚨 CRÍTICO</span></td>
+            <td>Último dia permitido para troca! Ação imediata necessária.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-card alert">
+        <strong>🔔 Botão "Testar Notificação":</strong>
+        <p style="margin-top: 0.3rem; margin-bottom: 0;">
+          Ao clicar em <strong>"Testar Notificação"</strong>, a notificação que você verá no Windows <strong>não é um teste genérico</strong>: ela simula exatamente o alerta correspondente à situação atual da sua senha (seja ela segura, em aviso de prazo ou pendente de configuração).
+        </p>
+      </div>
+    </section>
+
+    <!-- 7. FAQ -->
+    <section>
+      <h2>❓ 7. Perguntas Frequentes (FAQ)</h2>
+      
+      <h3>Onde ficam salvas as minhas configurações?</h3>
+      <p>Ficam em um arquivo JSON local na sua pasta de usuário: <span class="code">%USERPROFILE%\.foursys_chave_m\config.json</span>. Nenhuma informação é enviada para servidores externos.</p>
+
+      <h3>O aplicativo consome muita memória?</h3>
+      <p>Não. Ele é otimizado para rodar em segundo plano e realiza checagens a cada 30 minutos, consumindo uso praticamente nulo de processamento.</p>
+
+      <h3>Mudei de máquina, como manter meu histórico?</h3>
+      <p>Basta copiar o arquivo <span class="code">config.json</span> para a mesma pasta na nova máquina ou simplesmente registrar a data da última troca novamente na interface.</p>
+    </section>
+
+    <footer>
+      <p>© 2026 FourSys Soluções em TI — Inovação e produtividade para os nossos colaboradores.</p>
+      <p style="margin-top: 0.25rem;">Dúvidas ou sugestões? Fale com a equipe de TI da FourSys.</p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -118,17 +118,26 @@ jobs:
       - name: Compilar Executável com PyInstaller
         run: python build_exe.py
 
-      - name: Preparar arquivo para distribuição
+      - name: Preparar arquivos para distribuição
         shell: bash
         run: |
           mkdir -p release_dist
-          cp "${{ matrix.output_file }}" "release_dist/${{ matrix.artifact_name }}"
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            cp "dist/LembreteChaveM-Windows.zip" "release_dist/LembreteChaveM-Windows.zip"
+            cp "dist/LembreteChaveM.exe" "release_dist/LembreteChaveM-Windows.exe"
+            cp "Manual_de_Uso.html" "release_dist/Manual_de_Uso.html"
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            cp "dist/LembreteChaveM-MacOS.zip" "release_dist/LembreteChaveM-MacOS.zip"
+          else
+            cp "dist/LembreteChaveM-Linux.zip" "release_dist/LembreteChaveM-Linux.zip"
+            cp "dist/LembreteChaveM" "release_dist/LembreteChaveM-Linux"
+          fi
 
-      - name: Salvar Binário Compilado como Artefato
+      - name: Salvar Binários Compilados como Artefatos
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
-          path: release_dist/${{ matrix.artifact_name }}
+          name: artifacts-${{ matrix.os }}
+          path: release_dist/*
 
   release:
     name: Publicar GitHub Release

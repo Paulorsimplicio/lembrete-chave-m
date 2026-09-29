@@ -19,7 +19,7 @@ class TestStorage(unittest.TestCase):
         self.assertIsNone(self.storage.get_last_change_date())
         self.assertEqual(self.storage.get_cycle_days(), 30)
         self.assertEqual(self.storage.get_notified_thresholds(), [])
-        self.assertFalse(self.storage.get_autostart())
+        self.assertTrue(self.storage.get_autostart())
         self.assertTrue(self.storage.get_minimize_to_tray())
 
     def test_set_last_change_date(self):

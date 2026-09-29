@@ -35,6 +35,13 @@ class Application:
         self.notifier = Notifier()
         self.is_running = True
 
+        # Garante o padrão corporativo de inicialização com o computador
+        try:
+            from src.autostart import set_autostart
+            set_autostart(True)
+        except Exception as e:
+            logger.debug(f"Não foi possível registrar autostart no SO: {e}")
+
         # Cria a janela principal
         self.window = MainWindow(
             storage=self.storage,

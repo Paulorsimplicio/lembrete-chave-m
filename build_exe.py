@@ -56,17 +56,53 @@ def build():
 
     PyInstaller.__main__.run(args)
 
-    # No macOS, compactar o .app preservando links simbólicos para distribuição
-    if sys.platform == "darwin":
+    # Copia o Manual de Uso para a pasta dist
+    manual_src = os.path.abspath("Manual_de_Uso.html")
+    manual_dist = os.path.join("dist", "Manual_de_Uso.html")
+    if os.path.exists(manual_src):
+        shutil.copy(manual_src, manual_dist)
+
+    import zipfile
+
+    # No Windows: empacotar LembreteChaveM.exe e Manual_de_Uso.html em LembreteChaveM-Windows.zip
+    if sys.platform.startswith("win"):
+        exe_file = os.path.join("dist", "LembreteChaveM.exe")
+        win_zip = os.path.join("dist", "LembreteChaveM-Windows.zip")
+        if os.path.exists(exe_file):
+            with zipfile.ZipFile(win_zip, "w", zipfile.ZIP_DEFLATED) as zf:
+                zf.write(exe_file, "LembreteChaveM.exe")
+                if os.path.exists(manual_dist):
+                    zf.write(manual_dist, "Manual_de_Uso.html")
+            print(f"Pacote Windows gerado com executável e manual em: {win_zip}")
+
+    # No macOS: compactar o .app e o manual preservando links simbólicos para distribuição
+    elif sys.platform == "darwin":
         app_path = os.path.join("dist", "LembreteChaveM.app")
         zip_path = os.path.join("dist", "LembreteChaveM-MacOS.zip")
         if os.path.exists(app_path):
             import subprocess
             try:
-                subprocess.run(["zip", "-r", "-y", "LembreteChaveM-MacOS.zip", "LembreteChaveM.app"], cwd="dist", check=True)
-                print(f"Pacote macOS .app compactado em: {zip_path}")
+                cmd = ["zip", "-r", "-y", "LembreteChaveM-MacOS.zip", "LembreteChaveM.app"]
+                if os.path.exists(manual_dist):
+                    cmd.append("Manual_de_Uso.html")
+                subprocess.run(cmd, cwd="dist", check=True)
+                print(f"Pacote macOS .app compactado com manual em: {zip_path}")
             except Exception as e:
                 print(f"Aviso ao compactar .app no macOS: {e}")
+
+    # No Linux: empacotar o binário e o manual em LembreteChaveM-Linux.zip
+    else:
+        bin_file = os.path.join("dist", "LembreteChaveM")
+        linux_zip = os.path.join("dist", "LembreteChaveM-Linux.zip")
+        script_file = os.path.abspath("iniciar_linux.sh")
+        if os.path.exists(bin_file):
+            with zipfile.ZipFile(linux_zip, "w", zipfile.ZIP_DEFLATED) as zf:
+                zf.write(bin_file, "LembreteChaveM")
+                if os.path.exists(manual_dist):
+                    zf.write(manual_dist, "Manual_de_Uso.html")
+                if os.path.exists(script_file):
+                    zf.write(script_file, "iniciar_linux.sh")
+            print(f"Pacote Linux gerado com binário e manual em: {linux_zip}")
 
     print("\n" + "=" * 60)
     print("Compilação concluída!")

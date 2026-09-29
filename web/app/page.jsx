@@ -48,14 +48,14 @@ export default function Home() {
       case 'macos':
         return {
           title: 'Baixar para macOS',
-          format: 'Pacote .zip (LembreteChaveM.app)',
+          format: 'Pacote .zip (LembreteChaveM.app + Manual de Uso)',
           url: versionData.assets?.macos?.url,
           icon: '🍏'
         };
       case 'linux':
         return {
           title: 'Baixar para Linux',
-          format: 'Binário executável (x86_64)',
+          format: 'Pacote .zip (Binário + Manual de Uso)',
           url: versionData.assets?.linux?.url,
           icon: '🐧'
         };
@@ -63,7 +63,7 @@ export default function Home() {
       default:
         return {
           title: 'Baixar para Windows',
-          format: 'Executável portátil (.exe)',
+          format: 'Pacote .zip (Executável .exe + Manual de Uso)',
           url: versionData.assets?.windows?.url,
           icon: '🪟'
         };
@@ -81,7 +81,26 @@ export default function Home() {
             <img src="/icon.png" alt="Lembrete Chave M" className="brand-logo" />
             <span className="brand-title">Lembrete Chave M</span>
           </a>
-          <span className="badge-corp">FourSys Internal</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <a 
+              href="/Manual_de_Uso.html" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{
+                color: '#38bdf8',
+                fontSize: '0.85rem',
+                fontWeight: '600',
+                textDecoration: 'none',
+                padding: '0.35rem 0.75rem',
+                borderRadius: '8px',
+                background: 'rgba(56, 189, 248, 0.1)',
+                border: '1px solid rgba(56, 189, 248, 0.2)'
+              }}
+            >
+              📖 Manual de Uso
+            </a>
+            <span className="badge-corp">FourSys Internal</span>
+          </div>
         </div>
       </header>
 
@@ -100,12 +119,36 @@ export default function Home() {
           Assistente leve e inteligente para desktop. Notifica nos horários ideais do expediente, respeita feriados e funciona em segundo plano sem atrapalhar seu fluxo.
         </p>
 
-        {/* CTA Principal com Detecção de SO */}
+        {/* CTA Principal com Detecção de SO e Manual */}
         <div className="cta-wrapper">
-          <a href={primary.url} className="btn-primary" id="btn-primary-download">
-            <span style={{ fontSize: '1.4rem' }}>{primary.icon}</span>
-            <span>{primary.title}</span>
-          </a>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <a href={primary.url} className="btn-primary" id="btn-primary-download">
+              <span style={{ fontSize: '1.4rem' }}>{primary.icon}</span>
+              <span>{primary.title}</span>
+            </a>
+            <a 
+              href="/Manual_de_Uso.html" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid var(--border-subtle)',
+                color: '#f8fafc',
+                padding: '1.1rem 1.6rem',
+                borderRadius: '14px',
+                fontSize: '1rem',
+                fontWeight: '600',
+                textDecoration: 'none',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <span>📖</span>
+              <span>Manual Online</span>
+            </a>
+          </div>
           <span className="os-detected-subtext">
             Detectado para o seu sistema: <strong>{primary.format}</strong>
           </span>
@@ -124,15 +167,15 @@ export default function Home() {
                 <div className="platform-icon-box">🪟</div>
                 <div>
                   <div className="platform-name">Windows</div>
-                  <div className="platform-format">Executável .exe portátil</div>
+                  <div className="platform-format">Pacote .zip (.exe + Manual)</div>
                 </div>
               </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                Compatível com Windows 10 e 11 (64 bits). Dispensa instalador.
+                Compatível com Windows 10 e 11 (64 bits). Inclui executável e Manual de Uso.
               </p>
             </div>
             <div className="platform-action">
-              <span>Baixar arquivo .exe</span>
+              <span>Baixar pacote com Manual</span>
               <span>↓</span>
             </div>
           </a>
@@ -144,15 +187,15 @@ export default function Home() {
                 <div className="platform-icon-box">🍏</div>
                 <div>
                   <div className="platform-name">macOS</div>
-                  <div className="platform-format">Pacote .zip (.app nativo)</div>
+                  <div className="platform-format">Pacote .zip (.app + Manual)</div>
                 </div>
               </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                Compatível com arquiteturas Apple Silicon (M1/M2/M3/M4) e Intel.
+                Compatível com Apple Silicon (M1/M2/M3/M4) e Intel. Inclui Manual de Uso.
               </p>
             </div>
             <div className="platform-action">
-              <span>Baixar arquivo .zip</span>
+              <span>Baixar pacote com Manual</span>
               <span>↓</span>
             </div>
           </a>
@@ -164,7 +207,7 @@ export default function Home() {
                 <div className="platform-icon-box">🐧</div>
                 <div>
                   <div className="platform-name">Linux</div>
-                  <div className="platform-format">Binário standalone x86_64</div>
+                  <div className="platform-format">Pacote .zip (Binário + Manual)</div>
                 </div>
               </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
@@ -172,7 +215,7 @@ export default function Home() {
               </p>
             </div>
             <div className="platform-action">
-              <span>Baixar binário Linux</span>
+              <span>Baixar pacote com Manual</span>
               <span>↓</span>
             </div>
           </a>

@@ -12,8 +12,8 @@ DEFAULT_DATA: Dict[str, Any] = {
     "last_change_date": None,         # Formato: "YYYY-MM-DD"
     "cycle_days": DEFAULT_CYCLE_DAYS, # Padrão: 30 dias
     "notified_thresholds": [],        # Ex: [7, 3] para não repetir alertas no mesmo ciclo
-    "autostart": False,
-    "minimize_to_tray": True,
+    "autostart": True,                # Padrão permanente: sempre inicia com o sistema
+    "minimize_to_tray": True,         # Padrão permanente: sempre minimiza para a bandeja
     "theme": "dark"
 }
 
@@ -32,6 +32,9 @@ class Storage:
                 content = json.load(f)
                 data = DEFAULT_DATA.copy()
                 data.update(content)
+                # Garante os padrões corporativos obrigatórios
+                data["autostart"] = True
+                data["minimize_to_tray"] = True
                 return data
         except Exception as e:
             logger.error(f"Erro ao carregar dados locais ({self.data_file}): {e}")
