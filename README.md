@@ -43,6 +43,9 @@ automacao-foursys/
 │   ├── autostart.py        # Gerenciador de inicialização no boot
 │   ├── tray.py             # Integração com a bandeja do sistema (System Tray)
 │   └── gui.py              # Interface gráfica moderna (CustomTkinter)
+├── web/                    # Landing page corporativa em Next.js (deploy na Vercel)
+│   ├── app/                # Páginas, estilos e endpoint de versão dinâmica
+│   └── public/             # Ícones e recursos visuais
 ├── tests/
 │   ├── test_holidays.py    # Testes dos feriados e antecipação de dias úteis
 │   ├── test_storage.py     # Testes unitários do armazenamento

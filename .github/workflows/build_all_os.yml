@@ -1,13 +1,86 @@
-name: Compilar Executáveis (Windows, Mac e Linux)
+name: Compilar e Publicar Releases (Windows, Mac e Linux)
 
 on:
   push:
     branches: [ master, main ]
+    paths-ignore:
+      - 'web/**'
+      - '*.md'
+      - '.gitignore'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
+  version:
+    name: Calcular Próxima Versão e Tag
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.calc_version.outputs.tag_name }}
+      version: ${{ steps.calc_version.outputs.version }}
+    steps:
+      - name: Baixar código-fonte
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Calcular versão automática
+        id: calc_version
+        run: |
+          python - << 'EOF'
+          import subprocess
+          import re
+          import os
+
+          # Buscar tags existentes no repositório
+          subprocess.run(["git", "fetch", "--tags"], check=False)
+          tags_proc = subprocess.run(["git", "tag", "-l", "v*.*.*"], capture_output=True, text=True)
+          valid_tags = [t.strip() for t in tags_proc.stdout.splitlines() if re.match(r"^v\d+\.\d+\.\d+$", t.strip())]
+
+          def parse_ver(t):
+              return [int(x) for x in t[1:].split(".")]
+
+          if valid_tags:
+              latest_tag = max(valid_tags, key=parse_ver)
+              major, minor, patch = parse_ver(latest_tag)
+          else:
+              # Versão inicial base do projeto
+              major, minor, patch = 1, 2, 1
+
+          # Analisar último commit para Conventional Commits
+          msg_proc = subprocess.run(["git", "log", "-1", "--pretty=%B"], capture_output=True, text=True)
+          msg = msg_proc.stdout.strip().lower()
+
+          if "breaking change" in msg or re.search(r"^[a-z]+!:", msg):
+              major += 1
+              minor = 0
+              patch = 0
+          elif msg.startswith("feat:") or msg.startswith("feat(") or "feat:" in msg:
+              minor += 1
+              patch = 0
+          else:
+              patch += 1
+
+          new_tag = f"v{major}.{minor}.{patch}"
+          new_ver = f"{major}.{minor}.{patch}"
+          print(f"Versão calculada: {new_tag} ({new_ver})")
+
+          output_file = os.getenv("GITHUB_OUTPUT")
+          if output_file:
+              with open(output_file, "a", encoding="utf-8") as f:
+                  f.write(f"tag_name={new_tag}\n")
+                  f.write(f"version={new_ver}\n")
+          EOF
+
   build:
     name: Build para ${{ matrix.os }}
+    needs: version
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -45,8 +118,36 @@ jobs:
       - name: Compilar Executável com PyInstaller
         run: python build_exe.py
 
+      - name: Preparar arquivo para distribuição
+        shell: bash
+        run: |
+          mkdir -p release_dist
+          cp "${{ matrix.output_file }}" "release_dist/${{ matrix.artifact_name }}"
+
       - name: Salvar Binário Compilado como Artefato
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
-          path: ${{ matrix.output_file }}
+          path: release_dist/${{ matrix.artifact_name }}
+
+  release:
+    name: Publicar GitHub Release
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar todos os binários compilados
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Criar GitHub Release e Anexar Binários
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.version.outputs.tag_name }}
+          name: "Lembrete Chave M ${{ needs.version.outputs.tag_name }}"
+          generate_release_notes: true
+          files: |
+            release-assets/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
