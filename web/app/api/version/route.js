@@ -4,7 +4,7 @@ export const revalidate = 600; // Cache por 10 minutos
 
 export async function GET() {
   const repo = 'Paulorsimplicio/lembrete-chave-m';
-  const defaultVersion = 'v1.2.1';
+  const defaultVersion = 'v1.4.0';
   
   const defaultAssets = {
     windows: {

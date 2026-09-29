@@ -5,11 +5,11 @@ import { useState, useEffect } from 'react';
 export default function Home() {
   const [os, setOs] = useState('windows');
   const [versionData, setVersionData] = useState({
-    version: 'v1.2.1',
+    version: 'v1.4.0',
     assets: {
-      windows: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.exe', name: 'LembreteChaveM-Windows.exe' },
+      windows: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.zip', name: 'LembreteChaveM-Windows.zip' },
       macos: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-MacOS.zip', name: 'LembreteChaveM-MacOS.zip' },
-      linux: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Linux', name: 'LembreteChaveM-Linux' },
+      linux: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Linux.zip', name: 'LembreteChaveM-Linux.zip' },
     }
   });
   const [activeTab, setActiveTab] = useState('windows');

@@ -4,6 +4,7 @@ import logging
 from datetime import date
 from src.config import (
     APP_NAME,
+    APP_VERSION,
     BACKGROUND_CHECK_INTERVAL,
 )
 from src.storage import Storage
@@ -23,9 +24,11 @@ logger = logging.getLogger(__name__)
 
 class Application:
     def __init__(self, start_minimized: bool = False):
-        # 1. Verifica se já existe uma instância do gadget em execução
+        # 1. Verifica se já existe uma instância do gadget em execução (ou substitui se for mais nova)
         self.single_instance = SingleInstanceManager(
-            on_activate_callback=self._on_reactivate_requested
+            on_activate_callback=self._on_reactivate_requested,
+            on_upgrade_requested_callback=self.shutdown,
+            current_version=APP_VERSION
         )
         if self.single_instance.is_already_running():
             sys.exit(0)
@@ -41,6 +44,16 @@ class Application:
             set_autostart(True)
         except Exception as e:
             logger.debug(f"Não foi possível registrar autostart no SO: {e}")
+
+        # Se foi uma atualização que substituiu a instância anterior, notificar o colaborador
+        if self.single_instance.was_upgraded:
+            prev_ver = self.single_instance.replaced_version or "anterior"
+            logger.info(f"Instância anterior (v{prev_ver}) foi substituída com sucesso por esta v{APP_VERSION}!")
+            self.notifier.notify(
+                title="🎉 Lembrete Chave M Atualizado!",
+                message=f"A versão v{APP_VERSION} assumiu a execução e substituiu a versão v{prev_ver}.",
+                timeout=8
+            )
 
         # Cria a janela principal
         self.window = MainWindow(

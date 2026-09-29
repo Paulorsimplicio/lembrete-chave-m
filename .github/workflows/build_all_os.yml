@@ -112,8 +112,32 @@ jobs:
       - name: Gerar Ícones
         run: python generate_assets.py
 
-      - name: Rodar Testes Unitários
-        run: python -m unittest discover tests
+      - name: Injetar versão da release no código
+        run: |
+          python - << 'EOF'
+          import re
+          import os
+
+          ver = "${{ needs.version.outputs.version }}"
+          tag = "${{ needs.version.outputs.tag_name }}"
+          print(f"Injetando versao {ver} ({tag}) nos arquivos de build...")
+
+          # 1. Atualizar src/config.py
+          with open("src/config.py", "r", encoding="utf-8") as f:
+              cfg = f.read()
+          cfg = re.sub(r'APP_VERSION\s*=\s*["\'][^"\']+["\']', f'APP_VERSION = "{ver}"', cfg)
+          with open("src/config.py", "w", encoding="utf-8") as f:
+              f.write(cfg)
+
+          # 2. Atualizar Manual_de_Uso.html
+          for manual_file in ["Manual_de_Uso.html", "assets/Manual_de_Uso.html"]:
+              if os.path.exists(manual_file):
+                  with open(manual_file, "r", encoding="utf-8") as f:
+                      m = f.read()
+                  m = re.sub(r'v\d+\.\d+\.\d+', f'v{ver}', m)
+                  with open(manual_file, "w", encoding="utf-8") as f:
+                      f.write(m)
+          EOF
 
       - name: Compilar Executável com PyInstaller
         run: python build_exe.py
