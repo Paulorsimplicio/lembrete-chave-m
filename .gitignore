@@ -12,10 +12,16 @@ __pycache__/
 # PyInstaller build outputs
 build/
 dist/
+*.zip
 
 # Dados locais do aplicativo (se criados no workspace)
 .foursys_chave_m/
 *.log
+
+# Node / Web
+node_modules/
+.next/
+.vercel/
 
 # IDEs
 .vscode/

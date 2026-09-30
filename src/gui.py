@@ -53,13 +53,13 @@ class MainWindow(ctk.CTk):
         self.title(f"{APP_NAME} - {APP_SUBTITLE}")
 
         self.resizable(True, True)
-        self.minsize(450, 520)
+        self.minsize(450, 560)
 
         # Centralizado na tela
         screen_w = self.winfo_screenwidth()
         screen_h = self.winfo_screenheight()
         target_w = 480
-        target_h = 540
+        target_h = 600
 
         pos_x = max(0, (screen_w - target_w) // 2)
         pos_y = max(0, (screen_h - target_h) // 2)
@@ -75,16 +75,16 @@ class MainWindow(ctk.CTk):
         # Intercepta o evento de fechamento da janela (X)
         self.protocol("WM_DELETE_WINDOW", self.on_window_close)
 
-        # Monta os componentes
+        # Monta os componentes fixos e o container central
         self._build_header()
+        self._build_footer()
 
-        # Container principal limpo (sem barra de rolagem)
+        # Container principal limpo (sem barra de rolagem, entre o cabeçalho e o rodapé)
         self.main_container = ctk.CTkFrame(self, fg_color="transparent")
-        self.main_container.pack(fill="both", expand=True, padx=8, pady=(0, 4))
+        self.main_container.pack(side="top", fill="both", expand=True, padx=8, pady=(0, 2))
 
         self._build_status_card(self.main_container)
         self._build_action_card(self.main_container)
-        self._build_footer()
 
         # Atualiza a interface com os dados persistidos
         self.refresh_ui()
@@ -92,7 +92,7 @@ class MainWindow(ctk.CTk):
     def _build_header(self):
         """Cabeçalho com logo, título e badge de versão."""
         header_frame = ctk.CTkFrame(self, fg_color="transparent")
-        header_frame.pack(fill="x", padx=16, pady=(12, 6))
+        header_frame.pack(side="top", fill="x", padx=16, pady=(10, 4))
 
         # Logo / Ícone
         try:
@@ -137,7 +137,7 @@ class MainWindow(ctk.CTk):
     def _build_status_card(self, parent):
         """Card com o status atual de validade da chave M."""
         self.status_card = ctk.CTkFrame(parent, corner_radius=12, fg_color="#1e293b", border_width=1, border_color="#334155")
-        self.status_card.pack(fill="x", padx=8, pady=6)
+        self.status_card.pack(fill="x", padx=8, pady=4)
 
         # Status Pill (tag superior)
         self.status_pill = ctk.CTkLabel(
@@ -148,13 +148,13 @@ class MainWindow(ctk.CTk):
             text_color=COLOR_SAFE,
             corner_radius=12,
             padx=12,
-            pady=5
+            pady=4
         )
-        self.status_pill.pack(anchor="w", padx=16, pady=(12, 6))
+        self.status_pill.pack(anchor="w", padx=16, pady=(8, 4))
 
         # Destaque de dias restantes
         days_box = ctk.CTkFrame(self.status_card, fg_color="transparent")
-        days_box.pack(anchor="w", padx=16, pady=2)
+        days_box.pack(anchor="w", padx=16, pady=0)
 
         self.days_number_label = ctk.CTkLabel(
             days_box,
@@ -175,7 +175,7 @@ class MainWindow(ctk.CTk):
 
         # Barra de progresso do ciclo
         self.progress_bar = ctk.CTkProgressBar(self.status_card, height=10, corner_radius=5)
-        self.progress_bar.pack(fill="x", padx=20, pady=(12, 6))
+        self.progress_bar.pack(fill="x", padx=20, pady=(8, 4))
         self.progress_bar.set(0.0)
 
         # Informações complementares (Datas e avisos)
@@ -185,7 +185,7 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=12),
             text_color="#cbd5e1"
         )
-        self.info_date_label.pack(anchor="w", padx=20, pady=(4, 4))
+        self.info_date_label.pack(anchor="w", padx=20, pady=(2, 2))
 
         # Banner de antecipação (quando cai em fim de semana ou feriado)
         self.adjustment_banner = ctk.CTkLabel(
@@ -206,12 +206,12 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=11),
             text_color="#64748b"
         )
-        alerts_info.pack(anchor="w", padx=20, pady=(6, 16))
+        alerts_info.pack(anchor="w", padx=20, pady=(4, 8))
 
     def _build_action_card(self, parent):
         """Card para registrar quando a senha foi trocada e link para o portal."""
         action_card = ctk.CTkFrame(parent, corner_radius=12, fg_color="#1e293b", border_width=1, border_color="#334155")
-        action_card.pack(fill="x", padx=8, pady=6)
+        action_card.pack(fill="x", padx=8, pady=4)
 
         action_title = ctk.CTkLabel(
             action_card,
@@ -219,7 +219,7 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=14, weight="bold"),
             text_color="#f8fafc"
         )
-        action_title.pack(anchor="w", padx=16, pady=(14, 8))
+        action_title.pack(anchor="w", padx=16, pady=(8, 6))
 
         # Botão: Acessar página de troca de senha no portal Bradesco
         btn_portal = ctk.CTkButton(
@@ -228,11 +228,11 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=13, weight="bold"),
             fg_color="#dc2626",
             hover_color="#b91c1c",
-            height=38,
+            height=36,
             corner_radius=8,
             command=self.open_bradesco_portal
         )
-        btn_portal.pack(fill="x", padx=16, pady=(0, 8))
+        btn_portal.pack(fill="x", padx=16, pady=(0, 6))
 
         # Botão Rápido: Troquei Hoje
         btn_today = ctk.CTkButton(
@@ -241,15 +241,15 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=13, weight="bold"),
             fg_color="#0284c7",
             hover_color="#0369a1",
-            height=36,
+            height=34,
             corner_radius=8,
             command=self.set_changed_today
         )
-        btn_today.pack(fill="x", padx=16, pady=(0, 10))
+        btn_today.pack(fill="x", padx=16, pady=(0, 6))
 
         # Opção manual de outra data
         manual_frame = ctk.CTkFrame(action_card, fg_color="transparent")
-        manual_frame.pack(fill="x", padx=16, pady=(0, 10))
+        manual_frame.pack(fill="x", padx=16, pady=(0, 6))
 
         lbl_manual = ctk.CTkLabel(
             manual_frame,
@@ -257,7 +257,7 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=12),
             text_color="#94a3b8"
         )
-        lbl_manual.pack(anchor="w", pady=(0, 4))
+        lbl_manual.pack(anchor="w", pady=(0, 2))
 
         input_row = ctk.CTkFrame(manual_frame, fg_color="transparent")
         input_row.pack(fill="x")
@@ -266,7 +266,7 @@ class MainWindow(ctk.CTk):
             input_row,
             placeholder_text="Ex: 28/09/2026",
             font=ctk.CTkFont(size=13),
-            height=34,
+            height=32,
             corner_radius=8
         )
         self.date_entry.pack(side="left", fill="x", expand=True, padx=(0, 8))
@@ -277,7 +277,7 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=12, weight="bold"),
             fg_color="#334155",
             hover_color="#475569",
-            height=34,
+            height=32,
             width=90,
             corner_radius=8,
             command=self.save_custom_date
@@ -291,12 +291,12 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=12),
             text_color="#10b981"
         )
-        self.feedback_label.pack(anchor="w", padx=16, pady=(0, 10))
+        self.feedback_label.pack(anchor="w", padx=16, pady=(0, 6))
 
     def _build_footer(self):
         """Botões inferiores de utilidade."""
         footer_frame = ctk.CTkFrame(self, fg_color="transparent")
-        footer_frame.pack(fill="x", padx=16, pady=(6, 12))
+        footer_frame.pack(side="bottom", fill="x", padx=16, pady=(4, 10))
 
         btn_test_notif = ctk.CTkButton(
             footer_frame,
@@ -531,8 +531,8 @@ class MainWindow(ctk.CTk):
         """Oculta a janela principal para a bandeja do sistema."""
         self.withdraw()
         self.notifier.notify(
-            title=APP_NAME,
-            message="O lembrete continua ativo em segundo plano perto do relógio.",
+            title=f"{APP_NAME} Minimizado",
+            message="O gadget foi minimizado na bandeja e está sendo executado em segundo plano.",
             timeout=5
         )
 
