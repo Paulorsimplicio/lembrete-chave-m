@@ -31,7 +31,7 @@ export default function Home() {
     }
 
     // Fetch dynamic latest version & assets
-    fetch('/api/version')
+    fetch('/api/version', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && data.assets) {
@@ -44,26 +44,27 @@ export default function Home() {
   }, []);
 
   const getPrimaryDownload = () => {
+    const ver = versionData.version ? ` (${versionData.version})` : '';
     switch (os) {
       case 'macos':
         return {
-          title: 'Baixar para macOS',
-          format: 'Pacote .zip (LembreteChaveM.app + Manual de Uso)',
+          title: `Baixar para macOS${ver}`,
+          format: `${versionData.assets?.macos?.name || 'Pacote .zip'} (App + Manual)`,
           url: versionData.assets?.macos?.url,
           icon: '🍏'
         };
       case 'linux':
         return {
-          title: 'Baixar para Linux',
-          format: 'Pacote .zip (Binário + Manual de Uso)',
+          title: `Baixar para Linux${ver}`,
+          format: `${versionData.assets?.linux?.name || 'Pacote .zip'} (Binário + Manual)`,
           url: versionData.assets?.linux?.url,
           icon: '🐧'
         };
       case 'windows':
       default:
         return {
-          title: 'Baixar para Windows',
-          format: 'Pacote .zip (Executável .exe + Manual de Uso)',
+          title: `Baixar para Windows${ver}`,
+          format: `${versionData.assets?.windows?.name || 'Pacote .zip'} (.exe + Manual)`,
           url: versionData.assets?.windows?.url,
           icon: '🪟'
         };

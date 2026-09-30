@@ -62,23 +62,35 @@ def build():
     if os.path.exists(manual_src):
         shutil.copy(manual_src, manual_dist)
 
+    from src.config import APP_VERSION
+    ver_tag = f"v{APP_VERSION}"
+
     import zipfile
 
-    # No Windows: empacotar LembreteChaveM.exe e Manual_de_Uso.html em LembreteChaveM-Windows.zip
+    # No Windows: empacotar LembreteChaveM.exe e Manual_de_Uso.html em LembreteChaveM-Windows.zip e versionado
     if sys.platform.startswith("win"):
         exe_file = os.path.join("dist", "LembreteChaveM.exe")
-        win_zip = os.path.join("dist", "LembreteChaveM-Windows.zip")
+        ver_exe_name = f"LembreteChaveM-{ver_tag}.exe"
+        ver_exe_file = os.path.join("dist", ver_exe_name)
         if os.path.exists(exe_file):
-            with zipfile.ZipFile(win_zip, "w", zipfile.ZIP_DEFLATED) as zf:
-                zf.write(exe_file, "LembreteChaveM.exe")
-                if os.path.exists(manual_dist):
-                    zf.write(manual_dist, "Manual_de_Uso.html")
-            print(f"Pacote Windows gerado com executável e manual em: {win_zip}")
+            shutil.copy(exe_file, ver_exe_file)
+
+        win_zip = os.path.join("dist", "LembreteChaveM-Windows.zip")
+        ver_win_zip = os.path.join("dist", f"LembreteChaveM-Windows-{ver_tag}.zip")
+        if os.path.exists(exe_file):
+            for zpath in (win_zip, ver_win_zip):
+                with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as zf:
+                    zf.write(exe_file, "LembreteChaveM.exe")
+                    zf.write(exe_file, ver_exe_name)
+                    if os.path.exists(manual_dist):
+                        zf.write(manual_dist, "Manual_de_Uso.html")
+            print(f"Pacotes Windows gerados em: {win_zip} e {ver_win_zip}")
 
     # No macOS: compactar o .app e o manual preservando links simbólicos para distribuição
     elif sys.platform == "darwin":
         app_path = os.path.join("dist", "LembreteChaveM.app")
         zip_path = os.path.join("dist", "LembreteChaveM-MacOS.zip")
+        ver_zip_path = os.path.join("dist", f"LembreteChaveM-MacOS-{ver_tag}.zip")
         if os.path.exists(app_path):
             import subprocess
             try:
@@ -86,23 +98,32 @@ def build():
                 if os.path.exists(manual_dist):
                     cmd.append("Manual_de_Uso.html")
                 subprocess.run(cmd, cwd="dist", check=True)
-                print(f"Pacote macOS .app compactado com manual em: {zip_path}")
+                shutil.copy(zip_path, ver_zip_path)
+                print(f"Pacotes macOS gerados: {zip_path} e {ver_zip_path}")
             except Exception as e:
                 print(f"Aviso ao compactar .app no macOS: {e}")
 
     # No Linux: empacotar o binário e o manual em LembreteChaveM-Linux.zip
     else:
         bin_file = os.path.join("dist", "LembreteChaveM")
+        ver_bin_name = f"LembreteChaveM-{ver_tag}"
+        ver_bin_file = os.path.join("dist", ver_bin_name)
+        if os.path.exists(bin_file):
+            shutil.copy(bin_file, ver_bin_file)
+
         linux_zip = os.path.join("dist", "LembreteChaveM-Linux.zip")
+        ver_linux_zip = os.path.join("dist", f"LembreteChaveM-Linux-{ver_tag}.zip")
         script_file = os.path.abspath("iniciar_linux.sh")
         if os.path.exists(bin_file):
-            with zipfile.ZipFile(linux_zip, "w", zipfile.ZIP_DEFLATED) as zf:
-                zf.write(bin_file, "LembreteChaveM")
-                if os.path.exists(manual_dist):
-                    zf.write(manual_dist, "Manual_de_Uso.html")
-                if os.path.exists(script_file):
-                    zf.write(script_file, "iniciar_linux.sh")
-            print(f"Pacote Linux gerado com binário e manual em: {linux_zip}")
+            for zpath in (linux_zip, ver_linux_zip):
+                with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as zf:
+                    zf.write(bin_file, "LembreteChaveM")
+                    zf.write(bin_file, ver_bin_name)
+                    if os.path.exists(manual_dist):
+                        zf.write(manual_dist, "Manual_de_Uso.html")
+                    if os.path.exists(script_file):
+                        zf.write(script_file, "iniciar_linux.sh")
+            print(f"Pacotes Linux gerados: {linux_zip} e {ver_linux_zip}")
 
     print("\n" + "=" * 60)
     print("Compilação concluída!")

@@ -122,13 +122,22 @@ jobs:
         shell: bash
         run: |
           mkdir -p release_dist
+          VER="v${{ needs.version.outputs.version }}"
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            # Arquivos versionados
+            cp "dist/LembreteChaveM-Windows.zip" "release_dist/LembreteChaveM-Windows-${VER}.zip"
+            cp "dist/LembreteChaveM.exe" "release_dist/LembreteChaveM-Windows-${VER}.exe"
+            cp "dist/LembreteChaveM.exe" "release_dist/LembreteChaveM-${VER}.exe"
+            # Arquivos genéricos
             cp "dist/LembreteChaveM-Windows.zip" "release_dist/LembreteChaveM-Windows.zip"
             cp "dist/LembreteChaveM.exe" "release_dist/LembreteChaveM-Windows.exe"
             cp "Manual_de_Uso.html" "release_dist/Manual_de_Uso.html"
           elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            cp "dist/LembreteChaveM-MacOS.zip" "release_dist/LembreteChaveM-MacOS-${VER}.zip"
             cp "dist/LembreteChaveM-MacOS.zip" "release_dist/LembreteChaveM-MacOS.zip"
           else
+            cp "dist/LembreteChaveM-Linux.zip" "release_dist/LembreteChaveM-Linux-${VER}.zip"
+            cp "dist/LembreteChaveM" "release_dist/LembreteChaveM-Linux-${VER}"
             cp "dist/LembreteChaveM-Linux.zip" "release_dist/LembreteChaveM-Linux.zip"
             cp "dist/LembreteChaveM" "release_dist/LembreteChaveM-Linux"
           fi
