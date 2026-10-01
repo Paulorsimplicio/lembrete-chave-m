@@ -100,12 +100,12 @@ def calculate_status(
         color = COLOR_WARNING
     elif 1 <= days_remaining <= 2:
         status_code = "danger"
-        status_label = "Urgente: Trocar em Breve"
+        status_label = "Urgente: Trocar Senha"
         message = f"Faltam apenas {days_remaining} dia(s)! Troque para evitar bloqueio."
         color = COLOR_DANGER
     elif days_remaining == 0:
         status_code = "today"
-        status_label = "ÚLTIMO DIA ÚTIL!"
+        status_label = "ÚLTIMO DIA PARA A TROCA!"
         message = "Hoje é o último dia útil para trocar sua senha! Troque imediatamente."
         color = COLOR_EXPIRED
     else:

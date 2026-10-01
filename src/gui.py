@@ -378,7 +378,7 @@ class MainWindow(ctk.CTk):
                 )
             elif days == 0:
                 self.days_text_label.configure(
-                    text=f"ÚLTIMO DIA ÚTIL!\nTroque hoje antes de expirar.",
+                    text=f"ÚLTIMO DIA PARA A TROCA!\nTroque hoje antes de expirar.",
                     text_color=COLOR_EXPIRED
                 )
             else:
