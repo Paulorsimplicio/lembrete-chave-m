@@ -67,7 +67,7 @@ def build():
 
     import zipfile
 
-    # No Windows: empacotar LembreteChaveM.exe e Manual_de_Uso.html em LembreteChaveM-Windows.zip e versionado
+    # No Windows: empacotar apenas o executável versionado e Manual_de_Uso.html em LembreteChaveM-Windows.zip e versionado
     if sys.platform.startswith("win"):
         exe_file = os.path.join("dist", "LembreteChaveM.exe")
         ver_exe_name = f"LembreteChaveM-{ver_tag}.exe"
@@ -80,7 +80,6 @@ def build():
         if os.path.exists(exe_file):
             for zpath in (win_zip, ver_win_zip):
                 with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as zf:
-                    zf.write(exe_file, "LembreteChaveM.exe")
                     zf.write(exe_file, ver_exe_name)
                     if os.path.exists(manual_dist):
                         zf.write(manual_dist, "Manual_de_Uso.html")
@@ -103,7 +102,7 @@ def build():
             except Exception as e:
                 print(f"Aviso ao compactar .app no macOS: {e}")
 
-    # No Linux: empacotar o binário e o manual em LembreteChaveM-Linux.zip
+    # No Linux: empacotar o binário versionado e o manual em LembreteChaveM-Linux.zip
     else:
         bin_file = os.path.join("dist", "LembreteChaveM")
         ver_bin_name = f"LembreteChaveM-{ver_tag}"
@@ -117,13 +116,12 @@ def build():
         if os.path.exists(bin_file):
             for zpath in (linux_zip, ver_linux_zip):
                 with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as zf:
-                    zf.write(bin_file, "LembreteChaveM")
                     zf.write(bin_file, ver_bin_name)
                     if os.path.exists(manual_dist):
                         zf.write(manual_dist, "Manual_de_Uso.html")
                     if os.path.exists(script_file):
                         zf.write(script_file, "iniciar_linux.sh")
-            print(f"Pacotes Linux gerados: {linux_zip} e {ver_linux_zip}")
+            print(f"Pacotes Linux gerados em: {linux_zip} e {ver_linux_zip}")
 
     print("\n" + "=" * 60)
     print("Compilação concluída!")
