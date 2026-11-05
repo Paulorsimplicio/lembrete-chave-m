@@ -544,5 +544,9 @@ class MainWindow(ctk.CTk):
         self.refresh_ui()
 
     def on_window_close(self):
-        """Ação ao clicar no botão fechar (X): sempre minimiza para a bandeja como padrão."""
-        self.minimize_to_tray()
+        """Ação ao clicar no botão fechar (X): no macOS fecha para a Dock/encerra ou minimiza conform SO."""
+        if sys.platform == "darwin":
+            # No macOS, iconify minimiza para a Dock nativa do Mac
+            self.iconify()
+        else:
+            self.minimize_to_tray()

@@ -91,6 +91,24 @@ def build():
         pkg_file = os.path.join("dist", "LembreteChaveM-MacOS.pkg")
         ver_pkg_file = os.path.join("dist", f"LembreteChaveM-MacOS-{ver_tag}.pkg")
         if os.path.exists(app_path):
+            # Injeta metadata de versão e bundle no Info.plist do .app
+            info_plist_path = os.path.join(app_path, "Contents", "Info.plist")
+            if os.path.exists(info_plist_path):
+                try:
+                    import plistlib
+                    with open(info_plist_path, "rb") as fp:
+                        plist_data = plistlib.load(fp)
+                    plist_data["CFBundleShortVersionString"] = APP_VERSION
+                    plist_data["CFBundleVersion"] = APP_VERSION
+                    plist_data["CFBundleName"] = "LembreteChaveM"
+                    plist_data["CFBundleDisplayName"] = "Lembrete Chave M"
+                    plist_data["CFBundleIdentifier"] = "br.com.foursys.lembretechavem"
+                    with open(info_plist_path, "wb") as fp:
+                        plistlib.dump(plist_data, fp)
+                    print(f"Info.plist atualizado com versao {APP_VERSION}")
+                except Exception as e:
+                    print(f"Aviso ao atualizar Info.plist: {e}")
+
             import subprocess
             try:
                 # Gera o instalador .pkg apontando para instalar diretamente em /Applications

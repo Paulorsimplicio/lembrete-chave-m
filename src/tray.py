@@ -1,5 +1,6 @@
 import threading
 import logging
+import sys
 from PIL import Image
 import pystray
 from pystray import MenuItem as item
@@ -56,7 +57,13 @@ class TrayManager:
             self.on_exit()
 
     def start(self):
-        """Inicia o ícone da bandeja em uma thread secundária."""
+        """Inicia o ícone da bandeja em uma thread secundária (no macOS isso é ignorado por incompatibilidade de threads do Cocoa)."""
+        # No macOS, o AppKit/Cocoa exige que qualquer NSStatusItem rode na main thread,
+        # o que conflita e gera SIGTRAP (NSUpdateCycleInitialize) com a mainloop do Tkinter.
+        if sys.platform == "darwin":
+            logger.info("Bandeja do sistema (pystray) desativada no macOS para estabilidade nativa.")
+            return
+
         try:
             image = Image.open(str(ICON_PNG))
             self.icon = pystray.Icon(
