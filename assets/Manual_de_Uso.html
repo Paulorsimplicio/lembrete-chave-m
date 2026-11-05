@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +24,11 @@
       --text-muted: #94a3b8;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -103,14 +108,20 @@
       margin: 1.4rem 0 0.5rem;
     }
 
-    p { margin-bottom: 1rem; color: #cbd5e1; }
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
 
-    ul, ol {
+    ul,
+    ol {
       margin: 0.5rem 0 1.2rem 1.5rem;
       color: #cbd5e1;
     }
 
-    li { margin-bottom: 0.4rem; }
+    li {
+      margin-bottom: 0.4rem;
+    }
 
     .highlight-card {
       background: var(--bg-card-alt);
@@ -161,7 +172,8 @@
       font-size: 0.92rem;
     }
 
-    th, td {
+    th,
+    td {
       padding: 0.75rem 1rem;
       text-align: left;
       border: 1px solid var(--border);
@@ -177,9 +189,20 @@
       background: rgba(0, 0, 0, 0.2);
     }
 
-    .tag-safe { color: var(--emerald); font-weight: 700; }
-    .tag-warning { color: var(--amber); font-weight: 700; }
-    .tag-danger { color: var(--rose); font-weight: 700; }
+    .tag-safe {
+      color: var(--emerald);
+      font-weight: 700;
+    }
+
+    .tag-warning {
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    .tag-danger {
+      color: var(--rose);
+      font-weight: 700;
+    }
 
     footer {
       border-top: 1px solid var(--border);
@@ -191,14 +214,39 @@
     }
 
     @media print {
-      body { background: #ffffff; color: #1e293b; padding: 0; }
-      .container { background: #ffffff; border: none; box-shadow: none; padding: 0; }
-      h1, h2, h3 { color: #0f172a; -webkit-text-fill-color: initial; }
-      .highlight-card { background: #f8fafc; border: 1px solid #cbd5e1; }
-      th, td { border-color: #cbd5e1; }
+      body {
+        background: #ffffff;
+        color: #1e293b;
+        padding: 0;
+      }
+
+      .container {
+        background: #ffffff;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: #0f172a;
+        -webkit-text-fill-color: initial;
+      }
+
+      .highlight-card {
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+      }
+
+      th,
+      td {
+        border-color: #cbd5e1;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <header>
@@ -208,7 +256,8 @@
         <p class="subtitle">Guia Completo de Instalação, Funcionamento e Boas Práticas</p>
       </div>
       <div>
-        <span class="badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: var(--emerald);">v1.4.0</span>
+        <span class="badge"
+          style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: var(--emerald);">v1.4.0</span>
       </div>
     </header>
 
@@ -216,12 +265,16 @@
     <section>
       <h2>🎯 1. Visão Geral e Objetivo</h2>
       <p>
-        O <strong>Lembrete Chave M</strong> é um assistente leve para computadores corporativos desenvolvido para garantir que nenhum colaborador da FourSys alocado em clientes (como o Bradesco) tenha sua conta ou Chave M bloqueada por esquecimento na renovação da senha periódica.
+        O <strong>Lembrete Chave M</strong> é um assistente leve para computadores corporativos desenvolvido para
+        garantir que nenhum colaborador da FourSys alocado em clientes (como o Bradesco) tenha sua conta ou Chave M
+        bloqueada por esquecimento na renovação da senha periódica.
       </p>
       <div class="highlight-card">
         <strong>Por que a ferramenta existe?</strong>
         <p style="margin-top: 0.4rem; margin-bottom: 0;">
-          A senha da Chave M expira obrigatoriamente a cada <strong>30 dias</strong>. Se expirar, o colaborador fica impossibilitado de acessar os sistemas e precisa abrir chamado com a equipe de TI, gerando perda de tempo e retrabalho. O aplicativo automatiza esse controle para você.
+          A senha da Chave M expira obrigatoriamente a cada <strong>30 dias</strong>. Se expirar, o colaborador fica
+          impossibilitado de acessar os sistemas e precisa abrir chamado com a equipe de TI, gerando perda de tempo e
+          retrabalho. O aplicativo automatiza esse controle para você.
         </p>
       </div>
     </section>
@@ -229,33 +282,43 @@
     <!-- 2. Como Funciona a Regra de Negócio -->
     <section>
       <h2>🧠 2. Como Funciona a Contagem Inteligente</h2>
-      <p>O aplicativo não faz uma simples contagem regressiva de dias; ele aplica as regras reais do expediente corporativo:</p>
-      
+      <p>O aplicativo não faz uma simples contagem regressiva de dias; ele aplica as regras reais do expediente
+        corporativo:</p>
+
       <ul>
-        <li><strong>Margem de Segurança (Dia 29):</strong> Embora a expiração técnica seja de 30 dias, o prazo limite estipulado pelo aplicativo é no <strong>29º dia</strong>, garantindo que você nunca deixe para o último minuto.</li>
-        <li><strong>Antecipação Automática de Feriados e Fins de Semana:</strong> Se o 29º dia cair em um sábado, domingo ou feriado nacional brasileiro (como Carnaval, Tiradentes, Natal, etc.), a ferramenta <strong>antecipa automaticamente</strong> o prazo para o dia útil anterior!</li>
-        <li><strong>Cálculo de Dias Úteis:</strong> O contador exibe sempre a quantidade real de dias úteis restantes até a data limite.</li>
+        <li><strong>Margem de Segurança (Dia 29):</strong> Embora a expiração técnica seja de 30 dias, o prazo limite
+          estipulado pelo aplicativo é no <strong>29º dia</strong>, garantindo que você nunca deixe para o último
+          minuto.</li>
+        <li><strong>Antecipação Automática de Feriados e Fins de Semana:</strong> Se o 29º dia cair em um sábado,
+          domingo ou feriado nacional brasileiro (como Carnaval, Tiradentes, Natal, etc.), a ferramenta <strong>antecipa
+            automaticamente</strong> o prazo para o dia útil anterior!</li>
+        <li><strong>Cálculo de Dias Úteis:</strong> O contador exibe sempre a quantidade real de dias úteis restantes
+          até a data limite.</li>
       </ul>
     </section>
 
     <!-- 3. Instalação e Execução -->
     <section>
       <h2>💻 3. Como Baixar e Usar (Sem Privilégios de Administrador)</h2>
-      <p>O aplicativo é 100% portátil. <strong>Não é necessário ter direitos de administrador</strong> da máquina para utilizá-lo.</p>
+      <p>O aplicativo é 100% portátil. <strong>Não é necessário ter direitos de administrador</strong> da máquina para
+        utilizá-lo.</p>
 
       <h3>No Windows:</h3>
       <ol>
         <li>Baixe o arquivo compactado <span class="code">LembreteChaveM-Windows.zip</span>.</li>
-        <li>Extraia os arquivos para qualquer pasta de sua preferência (ex: em <em>Documentos</em> ou na sua pasta de usuário).</li>
+        <li>Extraia os arquivos para qualquer pasta de sua preferência (ex: em <em>Documentos</em> ou na sua pasta de
+          usuário).</li>
         <li>Dê dois cliques no arquivo executável <span class="code">LembreteChaveM-v*.exe</span>.</li>
-        <li>Pronto! O aplicativo abrirá imediatamente e já criará o atalho para iniciar sozinho nas próximas vezes que você ligar o computador.</li>
+        <li>Pronto! O aplicativo abrirá imediatamente e já criará o atalho para iniciar sozinho nas próximas vezes que
+          você ligar o computador.</li>
       </ol>
 
       <h3>No macOS:</h3>
       <ol>
-        <li>Baixe o pacote <span class="code">LembreteChaveM-MacOS.zip</span> e descompacte.</li>
-        <li>Arraste o <span class="code">LembreteChaveM.app</span> para a sua pasta de <em>Aplicativos</em>.</li>
-        <li>Na primeira abertura, se o sistema exibir aviso de desenvolvedor não verificado, clique com o botão direito sobre o app e escolha <strong>"Abrir"</strong>.</li>
+        <li>Baixe o instalador <span class="code">LembreteChaveM-MacOS.pkg</span>.</li>
+        <li>Dê dois cliques no instalador e siga o assistente para instalar em <em>Aplicativos</em>.</li>
+        <li>Na primeira abertura, se o sistema exibir aviso de desenvolvedor não verificado, clique com o botão direito
+          sobre o app e escolha <strong>"Abrir"</strong>.</li>
       </ol>
 
       <h3>No Linux:</h3>
@@ -273,20 +336,26 @@
     <!-- 4. Padrões Corporativos -->
     <section>
       <h2>⚙️ 4. Padrões Corporativos Automáticos</h2>
-      <p>Para garantir que o colaborador não precise se preocupar com ajustes técnicos manuais, o aplicativo vem com os seguintes comportamentos fixos:</p>
+      <p>Para garantir que o colaborador não precise se preocupar com ajustes técnicos manuais, o aplicativo vem com os
+        seguintes comportamentos fixos:</p>
 
       <div class="highlight-card">
         <strong>🚀 Inicialização com o Computador:</strong>
-        <p style="margin-top: 0.3rem;">O aplicativo inicia automaticamente junto com o sistema operacional de forma silenciosa, sem exigir nenhuma configuração do usuário.</p>
+        <p style="margin-top: 0.3rem;">O aplicativo inicia automaticamente junto com o sistema operacional de forma
+          silenciosa, sem exigir nenhuma configuração do usuário.</p>
       </div>
 
       <div class="highlight-card">
         <strong>📥 Execução Silenciosa na Bandeja (System Tray):</strong>
-        <p style="margin-top: 0.3rem;">Ao clicar no botão de fechar <strong>(X)</strong> ou em <strong>"Ocultar na Bandeja"</strong>, o programa não é encerrado. Ele fica recolhido discretamente ao lado do relógio do Windows, consumindo memória mínima e monitorando em segundo plano.</p>
+        <p style="margin-top: 0.3rem;">Ao clicar no botão de fechar <strong>(X)</strong> ou em <strong>"Ocultar na
+            Bandeja"</strong>, o programa não é encerrado. Ele fica recolhido discretamente ao lado do relógio do
+          Windows, consumindo memória mínima e monitorando em segundo plano.</p>
       </div>
 
-      <p><strong>Como abrir a janela novamente:</strong> Basta dar dois cliques no ícone do Lembrete Chave M perto do relógio.</p>
-      <p><strong>Como encerrar de verdade:</strong> Clique com o botão direito no ícone da bandeja e selecione <em>"Sair do Lembrete"</em>.</p>
+      <p><strong>Como abrir a janela novamente:</strong> Basta dar dois cliques no ícone do Lembrete Chave M perto do
+        relógio.</p>
+      <p><strong>Como encerrar de verdade:</strong> Clique com o botão direito no ícone da bandeja e selecione <em>"Sair
+          do Lembrete"</em>.</p>
     </section>
 
     <!-- 5. Uso no Dia a Dia -->
@@ -295,15 +364,18 @@
       <ol>
         <li>
           <strong>Quando você acabou de trocar a senha no portal Bradesco:</strong><br>
-          Abra o gadget e clique no botão verde <strong>"✅ Troquei minha chave hoje"</strong>. O ciclo será reiniciado imediatamente para os próximos 30 dias.
+          Abra o gadget e clique no botão verde <strong>"✅ Troquei minha chave hoje"</strong>. O ciclo será reiniciado
+          imediatamente para os próximos 30 dias.
         </li>
         <li>
           <strong>Se você trocou em dias anteriores:</strong><br>
-          Digite a data no campo <em>"Ou digite outra data (DD/MM/AAAA)"</em> (ex: <span class="code">20/09/2026</span>) e clique em <strong>"Salvar Data"</strong>.
+          Digite a data no campo <em>"Ou digite outra data (DD/MM/AAAA)"</em> (ex: <span class="code">20/09/2026</span>)
+          e clique em <strong>"Salvar Data"</strong>.
         </li>
         <li>
           <strong>Acesso rápido ao portal de troca:</strong><br>
-          Clique no link azul <em>"🔗 Acessar portal oficial de troca de senha Bradesco"</em> para abrir a página oficial do SailPoint IdentityNow no navegador.
+          Clique no link azul <em>"🔗 Acessar portal oficial de troca de senha Bradesco"</em> para abrir a página
+          oficial do SailPoint IdentityNow no navegador.
         </li>
       </ol>
     </section>
@@ -353,7 +425,9 @@
       <div class="highlight-card alert">
         <strong>🔔 Botão "Testar Notificação":</strong>
         <p style="margin-top: 0.3rem; margin-bottom: 0;">
-          Ao clicar em <strong>"Testar Notificação"</strong>, a notificação que você verá no Windows <strong>não é um teste genérico</strong>: ela simula exatamente o alerta correspondente à situação atual da sua senha (seja ela segura, em aviso de prazo ou pendente de configuração).
+          Ao clicar em <strong>"Testar Notificação"</strong>, a notificação que você verá no Windows <strong>não é um
+            teste genérico</strong>: ela simula exatamente o alerta correspondente à situação atual da sua senha (seja
+          ela segura, em aviso de prazo ou pendente de configuração).
         </p>
       </div>
     </section>
@@ -361,15 +435,19 @@
     <!-- 7. FAQ -->
     <section>
       <h2>❓ 7. Perguntas Frequentes (FAQ)</h2>
-      
+
       <h3>Onde ficam salvas as minhas configurações?</h3>
-      <p>Ficam em um arquivo JSON local na sua pasta de usuário: <span class="code">%USERPROFILE%\.foursys_chave_m\config.json</span>. Nenhuma informação é enviada para servidores externos.</p>
+      <p>Ficam em um arquivo JSON local na sua pasta de usuário: <span
+          class="code">%USERPROFILE%\.foursys_chave_m\config.json</span>. Nenhuma informação é enviada para servidores
+        externos.</p>
 
       <h3>O aplicativo consome muita memória?</h3>
-      <p>Não. Ele é otimizado para rodar em segundo plano e realiza checagens a cada 30 minutos, consumindo uso praticamente nulo de processamento.</p>
+      <p>Não. Ele é otimizado para rodar em segundo plano e realiza checagens a cada 30 minutos, consumindo uso
+        praticamente nulo de processamento.</p>
 
       <h3>Mudei de máquina, como manter meu histórico?</h3>
-      <p>Basta copiar o arquivo <span class="code">config.json</span> para a mesma pasta na nova máquina ou simplesmente registrar a data da última troca novamente na interface.</p>
+      <p>Basta copiar o arquivo <span class="code">config.json</span> para a mesma pasta na nova máquina ou simplesmente
+        registrar a data da última troca novamente na interface.</p>
     </section>
 
     <footer>
@@ -378,4 +456,5 @@
     </footer>
   </div>
 </body>
+
 </html>

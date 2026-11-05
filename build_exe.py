@@ -85,22 +85,27 @@ def build():
                         zf.write(manual_dist, "Manual_de_Uso.html")
             print(f"Pacotes Windows gerados em: {win_zip} e {ver_win_zip}")
 
-    # No macOS: compactar o .app e o manual preservando links simbólicos para distribuição
+    # No macOS: gerar instalador .pkg e pacote de distribuição
     elif sys.platform == "darwin":
         app_path = os.path.join("dist", "LembreteChaveM.app")
-        zip_path = os.path.join("dist", "LembreteChaveM-MacOS.zip")
-        ver_zip_path = os.path.join("dist", f"LembreteChaveM-MacOS-{ver_tag}.zip")
+        pkg_file = os.path.join("dist", "LembreteChaveM-MacOS.pkg")
+        ver_pkg_file = os.path.join("dist", f"LembreteChaveM-MacOS-{ver_tag}.pkg")
         if os.path.exists(app_path):
             import subprocess
             try:
-                cmd = ["zip", "-r", "-y", "LembreteChaveM-MacOS.zip", "LembreteChaveM.app"]
-                if os.path.exists(manual_dist):
-                    cmd.append("Manual_de_Uso.html")
-                subprocess.run(cmd, cwd="dist", check=True)
-                shutil.copy(zip_path, ver_zip_path)
-                print(f"Pacotes macOS gerados: {zip_path} e {ver_zip_path}")
+                # Gera o instalador .pkg apontando para instalar diretamente em /Applications
+                cmd_pkg = [
+                    "pkgbuild",
+                    "--component", "LembreteChaveM.app",
+                    "--install-location", "/Applications",
+                    "--version", APP_VERSION,
+                    "LembreteChaveM-MacOS.pkg"
+                ]
+                subprocess.run(cmd_pkg, cwd="dist", check=True)
+                shutil.copy(pkg_file, ver_pkg_file)
+                print(f"Instaladores macOS (.pkg) gerados: {pkg_file} e {ver_pkg_file}")
             except Exception as e:
-                print(f"Aviso ao compactar .app no macOS: {e}")
+                print(f"Aviso ao gerar pacote .pkg no macOS: {e}")
 
     # No Linux: empacotar o binário versionado e o manual em LembreteChaveM-Linux.zip
     else:

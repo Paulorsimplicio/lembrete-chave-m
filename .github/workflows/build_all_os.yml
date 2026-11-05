@@ -89,8 +89,8 @@ jobs:
             artifact_name: LembreteChaveM-Windows.exe
             output_file: dist/LembreteChaveM.exe
           - os: macos-latest
-            artifact_name: LembreteChaveM-MacOS.zip
-            output_file: dist/LembreteChaveM-MacOS.zip
+            artifact_name: LembreteChaveM-MacOS.pkg
+            output_file: dist/LembreteChaveM-MacOS.pkg
           - os: ubuntu-latest
             artifact_name: LembreteChaveM-Linux
             output_file: dist/LembreteChaveM
@@ -133,8 +133,9 @@ jobs:
             cp "dist/LembreteChaveM.exe" "release_dist/LembreteChaveM-Windows.exe"
             cp "Manual_de_Uso.html" "release_dist/Manual_de_Uso.html"
           elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            cp "dist/LembreteChaveM-MacOS.zip" "release_dist/LembreteChaveM-MacOS-${VER}.zip"
-            cp "dist/LembreteChaveM-MacOS.zip" "release_dist/LembreteChaveM-MacOS.zip"
+            cp "dist/LembreteChaveM-MacOS.pkg" "release_dist/LembreteChaveM-MacOS-${VER}.pkg"
+            cp "dist/LembreteChaveM-MacOS.pkg" "release_dist/LembreteChaveM-MacOS.pkg"
+            cp "Manual_de_Uso.html" "release_dist/Manual_de_Uso.html"
           else
             cp "dist/LembreteChaveM-Linux.zip" "release_dist/LembreteChaveM-Linux-${VER}.zip"
             cp "dist/LembreteChaveM" "release_dist/LembreteChaveM-Linux-${VER}"

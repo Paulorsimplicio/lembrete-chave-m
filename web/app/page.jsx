@@ -8,7 +8,7 @@ export default function Home() {
     version: 'v1.4.0',
     assets: {
       windows: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.zip', name: 'LembreteChaveM-Windows.zip' },
-      macos: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-MacOS.zip', name: 'LembreteChaveM-MacOS.zip' },
+      macos: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-MacOS.pkg', name: 'LembreteChaveM-MacOS.pkg' },
       linux: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Linux.zip', name: 'LembreteChaveM-Linux.zip' },
     }
   });
@@ -49,7 +49,7 @@ export default function Home() {
       case 'macos':
         return {
           title: `Baixar para macOS${ver}`,
-          format: `${versionData.assets?.macos?.name || 'Pacote .zip'} (App + Manual)`,
+          format: `${versionData.assets?.macos?.name || 'Instalador .pkg'} (Instalador Nativo)`,
           url: versionData.assets?.macos?.url,
           icon: '🍏'
         };
@@ -188,15 +188,15 @@ export default function Home() {
                 <div className="platform-icon-box">🍏</div>
                 <div>
                   <div className="platform-name">macOS</div>
-                  <div className="platform-format">Pacote .zip (.app + Manual)</div>
+                  <div className="platform-format">Instalador .pkg</div>
                 </div>
               </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                Compatível com Apple Silicon (M1/M2/M3/M4) e Intel. Inclui Manual de Uso.
+                Compatível com Apple Silicon (M1/M2/M3/M4) e Intel. Instalador nativo para /Applications.
               </p>
             </div>
             <div className="platform-action">
-              <span>Baixar pacote com Manual</span>
+              <span>Baixar instalador .pkg</span>
               <span>↓</span>
             </div>
           </a>
@@ -323,22 +323,22 @@ export default function Home() {
               <div className="step-item">
                 <span className="step-number">1</span>
                 <div className="step-content">
-                  <strong>Baixe e descompacte o arquivo .zip</strong>
-                  <p>Dê dois cliques no <span className="code-snippet">LembreteChaveM-MacOS.zip</span> para extrair o <span className="code-snippet">LembreteChaveM.app</span>.</p>
+                  <strong>Baixe o instalador .pkg</strong>
+                  <p>Baixe o arquivo <span className="code-snippet">LembreteChaveM-MacOS.pkg</span>.</p>
                 </div>
               </div>
               <div className="step-item">
                 <span className="step-number">2</span>
                 <div className="step-content">
-                  <strong>Mova para Aplicativos</strong>
-                  <p>Arraste o aplicativo para a sua pasta de Aplicativos.</p>
+                  <strong>Execute o instalador</strong>
+                  <p>Dê dois cliques no instalador <span className="code-snippet">.pkg</span> e siga o assistente. O app será instalado diretamente na pasta Aplicativos (<span className="code-snippet">/Applications</span>).</p>
                 </div>
               </div>
               <div className="step-item">
                 <span className="step-number">3</span>
                 <div className="step-content">
                   <strong>Primeira abertura (Gatekeeper)</strong>
-                  <p>Por ser um app corporativo interno, se o macOS exibir aviso de desenvolvedor não verificado, clique com o botão direito sobre o app e escolha <em>"Abrir"</em>.</p>
+                  <p>Por ser um app corporativo interno, se o macOS exibir aviso de desenvolvedor não verificado, clique com o botão direito sobre o app ou pacote e escolha <em>"Abrir"</em>.</p>
                 </div>
               </div>
             </div>

@@ -14,8 +14,8 @@ export async function GET() {
       os: 'Windows'
     },
     macos: {
-      name: 'LembreteChaveM-MacOS.zip',
-      url: `https://github.com/${repo}/releases/latest/download/LembreteChaveM-MacOS.zip`,
+      name: 'LembreteChaveM-MacOS.pkg',
+      url: `https://github.com/${repo}/releases/latest/download/LembreteChaveM-MacOS.pkg`,
       os: 'macOS'
     },
     linux: {
@@ -83,7 +83,7 @@ export async function GET() {
             }
           }
         } else if (nameLower.includes('mac')) {
-          if (nameLower.endsWith('.zip')) {
+          if (nameLower.endsWith('.pkg') || nameLower.endsWith('.zip')) {
             const isVersioned = nameLower.includes('-v');
             if (!assets.macos.isVersioned || isVersioned) {
               assets.macos = {
