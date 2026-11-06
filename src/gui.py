@@ -75,6 +75,10 @@ class MainWindow(ctk.CTk):
         # Intercepta o evento de fechamento da janela (X)
         self.protocol("WM_DELETE_WINDOW", self.on_window_close)
 
+        # No macOS, registra o hook para reabrir a janela ao clicar no ícone da Dock
+        if sys.platform == "darwin":
+            self._setup_macos_dock_handler()
+
         # Monta os componentes fixos e o container central
         self._build_header()
         self._build_footer()
@@ -88,6 +92,14 @@ class MainWindow(ctk.CTk):
 
         # Atualiza a interface com os dados persistidos
         self.refresh_ui()
+
+    def _setup_macos_dock_handler(self):
+        """Registra o hook nativo do Tcl/Tk no macOS para restaurar a janela quando clicado na Dock."""
+        try:
+            self.createcommand("::tk::mac::ReopenApplication", self.show_window)
+            logger.info("Hook ::tk::mac::ReopenApplication registrado com sucesso.")
+        except Exception as e:
+            logger.debug(f"Não foi possível registrar ::tk::mac::ReopenApplication: {e}")
 
     def _build_header(self):
         """Cabeçalho com logo, título e badge de versão."""
@@ -325,16 +337,22 @@ class MainWindow(ctk.CTk):
         )
         btn_manual.pack(side="left")
 
+        # Botão de Minimizar / Ocultar
+        # No macOS, não há bandeja (menu bar) devido a limitações de concorrência do AppKit,
+        # portanto o botão minimiza para a Dock nativa
+        btn_minimize_text = "📥 Minimizar na Dock" if sys.platform == "darwin" else "📥 Ocultar na Bandeja"
+        btn_minimize_command = self.minimize_to_dock if sys.platform == "darwin" else self.minimize_to_tray
+
         btn_minimize = ctk.CTkButton(
             footer_frame,
-            text="📥 Ocultar na Bandeja",
+            text=btn_minimize_text,
             font=ctk.CTkFont(size=12, weight="bold"),
             fg_color="#0f766e",
             hover_color="#115e59",
             text_color="#f0fdfa",
             height=34,
             corner_radius=8,
-            command=self.minimize_to_tray
+            command=btn_minimize_command
         )
         btn_minimize.pack(side="right")
 
@@ -527,6 +545,15 @@ class MainWindow(ctk.CTk):
             text_color="#38bdf8"
         )
 
+    def minimize_to_dock(self):
+        """No macOS, minimiza a janela para a Dock nativa."""
+        self.iconify()
+        self.notifier.notify(
+            title=f"{APP_NAME} Minimizado",
+            message="O aplicativo foi minimizado na Dock e continua em execução em segundo plano.",
+            timeout=5
+        )
+
     def minimize_to_tray(self):
         """Oculta a janela principal para a bandeja do sistema."""
         self.withdraw()
@@ -538,6 +565,8 @@ class MainWindow(ctk.CTk):
 
     def show_window(self):
         """Restaura a janela na tela e traz para o primeiro plano."""
+        if self.state() == "iconic":
+            self.deiconify()
         self.deiconify()
         self.lift()
         self.focus_force()

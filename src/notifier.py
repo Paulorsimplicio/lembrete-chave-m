@@ -22,20 +22,36 @@ class Notifier:
 
     def notify(self, title: str, message: str, timeout: int = 10) -> bool:
         """Dispara uma notificação nativa do sistema operacional."""
-        # 1. Tenta via biblioteca plyer
-        try:
-            from plyer import notification
-            notification.notify(
-                title=title,
-                message=message,
-                app_name=self.app_name,
-                app_icon=self.icon_path if self.icon_path else None,
-                timeout=timeout,
-            )
-            logger.info(f"Notificação enviada com sucesso: [{title}] {message}")
-            return True
-        except Exception as e:
-            logger.warning(f"Falha ao enviar notificação via plyer: {e}")
+        # 1. No macOS, usar osascript nativo diretamente para evitar que o plyer
+        # tente abrir seletores de diretório ou use APIs legadas com comportamento instável
+        if sys.platform == "darwin":
+            try:
+                import subprocess
+                # Escapa aspas para evitar quebra de sintaxe no osascript
+                safe_title = title.replace('"', '\\"')
+                safe_message = message.replace('"', '\\"')
+                script = f'display notification "{safe_message}" with title "{safe_title}" sound name "Glass"'
+                subprocess.run(["osascript", "-e", script], check=False)
+                logger.info(f"Notificação nativa macOS enviada com sucesso: [{title}] {message}")
+                return True
+            except Exception as mac_err:
+                logger.error(f"Erro ao disparar notificação no macOS: {mac_err}")
+
+        # 2. Tenta via biblioteca plyer (Windows e Linux)
+        if not sys.platform == "darwin":
+            try:
+                from plyer import notification
+                notification.notify(
+                    title=title,
+                    message=message,
+                    app_name=self.app_name,
+                    app_icon=self.icon_path if self.icon_path else None,
+                    timeout=timeout,
+                )
+                logger.info(f"Notificação enviada com sucesso: [{title}] {message}")
+                return True
+            except Exception as e:
+                logger.warning(f"Falha ao enviar notificação via plyer: {e}")
 
         # 2. Fallback específico para Windows se plyer falhar
         if sys.platform.startswith("win"):
@@ -69,16 +85,6 @@ class Notifier:
                 if self.icon_path:
                     args.extend(["-i", self.icon_path])
                 subprocess.run(args, check=False)
-                return True
-            except Exception:
-                pass
-
-        # 4. Fallback no macOS usando osascript
-        if sys.platform == "darwin":
-            try:
-                import subprocess
-                script = f'display notification "{message}" with title "{title}"'
-                subprocess.run(["osascript", "-e", script], check=False)
                 return True
             except Exception:
                 pass
