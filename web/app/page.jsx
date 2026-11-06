@@ -123,37 +123,103 @@ export default function Home() {
 
         {/* CTA Principal com Detecção de SO e Manual */}
         <div className="cta-wrapper">
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <a href={primary.url} className="btn-primary" id="btn-primary-download">
-              <span style={{ fontSize: '1.4rem' }}>{primary.icon}</span>
-              <span>{primary.title}</span>
-            </a>
-            <a 
-              href="/Manual_de_Uso.html" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.6rem',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid var(--border-subtle)',
-                color: '#f8fafc',
-                padding: '1.1rem 1.6rem',
-                borderRadius: '14px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                textDecoration: 'none',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <span>📖</span>
-              <span>Manual Online</span>
-            </a>
-          </div>
-          <span className="os-detected-subtext">
-            Detectado para o seu sistema: <strong>{primary.format}</strong>
-          </span>
+          {os === 'macos' ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <a 
+                  href={versionData.assets?.macos?.url} 
+                  className="btn-primary" 
+                  id="btn-primary-macos-arm"
+                  style={{ minWidth: '260px', justifyContent: 'flex-start', padding: '1rem 1.6rem' }}
+                >
+                  <span style={{ fontSize: '1.6rem' }}>🍏</span>
+                  <div style={{ textAlign: 'left' }}>
+                    <div style={{ fontWeight: '700', fontSize: '1.05rem', lineHeight: '1.2' }}>macOS (Apple Silicon)</div>
+                    <div style={{ fontSize: '0.78rem', opacity: 0.9, fontWeight: '400', marginTop: '2px' }}>Chips M1, M2, M3, M4 (.pkg)</div>
+                  </div>
+                </a>
+
+                <a 
+                  href={versionData.assets?.macos_intel?.url} 
+                  className="btn-primary" 
+                  id="btn-primary-macos-intel"
+                  style={{ 
+                    minWidth: '260px', 
+                    justifyContent: 'flex-start', 
+                    padding: '1rem 1.6rem',
+                    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
+                  }}
+                >
+                  <span style={{ fontSize: '1.6rem' }}>💻</span>
+                  <div style={{ textAlign: 'left' }}>
+                    <div style={{ fontWeight: '700', fontSize: '1.05rem', lineHeight: '1.2' }}>macOS (Intel)</div>
+                    <div style={{ fontSize: '0.78rem', opacity: 0.9, fontWeight: '400', marginTop: '2px' }}>Core i5, i7, i9 (.pkg)</div>
+                  </div>
+                </a>
+
+                <a 
+                  href="/Manual_de_Uso.html" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.6rem',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid var(--border-subtle)',
+                    color: '#f8fafc',
+                    padding: '1rem 1.6rem',
+                    borderRadius: '14px',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <span>📖</span>
+                  <span>Manual Online</span>
+                </a>
+              </div>
+
+              <span className="os-detected-subtext">
+                Detectamos que seu sistema é <strong>macOS</strong>. Escolha a versão nativa do seu processador para instalar.
+              </span>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <a href={primary.url} className="btn-primary" id="btn-primary-download">
+                  <span style={{ fontSize: '1.4rem' }}>{primary.icon}</span>
+                  <span>{primary.title}</span>
+                </a>
+                <a 
+                  href="/Manual_de_Uso.html" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.6rem',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid var(--border-subtle)',
+                    color: '#f8fafc',
+                    padding: '1.1rem 1.6rem',
+                    borderRadius: '14px',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <span>📖</span>
+                  <span>Manual Online</span>
+                </a>
+              </div>
+              <span className="os-detected-subtext">
+                Detectado para o seu sistema: <strong>{primary.format}</strong>
+              </span>
+            </div>
+          )}
         </div>
       </section>
 
@@ -344,8 +410,8 @@ export default function Home() {
               <div className="step-item">
                 <span className="step-number">1</span>
                 <div className="step-content">
-                  <strong>Baixe o instalador .pkg</strong>
-                  <p>Baixe o arquivo <span className="code-snippet">LembreteChaveM-MacOS.pkg</span>.</p>
+                  <strong>Baixe o instalador .pkg correspondente</strong>
+                  <p>Escolha a versão compatível com seu Mac: <strong>Apple Silicon</strong> (chips M1 a M4) ou <strong>Intel</strong> (Core i5, i7 ou i9).</p>
                 </div>
               </div>
               <div className="step-item">
