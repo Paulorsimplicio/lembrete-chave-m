@@ -49,8 +49,10 @@ def build():
 
     # No Windows e Linux usamos --onefile para gerar um único binário executável
     # No macOS usamos --windowed para gerar um pacote nativo LembreteChaveM.app
+    # e --target-arch=universal2 para suportar nativamente tanto Intel (x86_64) quanto Apple Silicon (arm64)
     if sys.platform == "darwin":
         args.append("--windowed")
+        args.append("--target-arch=universal2")
     else:
         args.append("--onefile")
 
