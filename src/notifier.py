@@ -20,19 +20,40 @@ class Notifier:
             return str(ICON_PNG.resolve())
         return ""
 
-    def notify(self, title: str, message: str, timeout: int = 10) -> bool:
+    def notify(self, title: str, message: str, timeout: int = 10, is_alert: bool = True) -> bool:
         """Dispara uma notificação nativa do sistema operacional."""
-        # 1. No macOS, usar osascript nativo diretamente para evitar que o plyer
-        # tente abrir seletores de diretório ou use APIs legadas com comportamento instável
+        # 1. No macOS: reproduz áudio com afplay nativo e exibe diálogo ou banner
         if sys.platform == "darwin":
             try:
                 import subprocess
-                # Escapa aspas para evitar quebra de sintaxe no osascript
+                # 1.1 Reprodução de áudio nativa garantida via afplay (sem depender de permissões)
+                for sound_file in ["/System/Library/Sounds/Glass.aiff", "/System/Library/Sounds/Ping.aiff"]:
+                    if os.path.exists(sound_file):
+                        try:
+                            subprocess.Popen(["afplay", sound_file])
+                        except Exception:
+                            pass
+                        break
+
                 safe_title = title.replace('"', '\\"')
                 safe_message = message.replace('"', '\\"')
-                script = f'display notification "{safe_message}" with title "{safe_title}" sound name "Glass"'
-                subprocess.run(["osascript", "-e", script], check=False)
-                logger.info(f"Notificação nativa macOS enviada com sucesso: [{title}] {message}")
+
+                # 1.2 Se for um alerta (teste ou limiar de expiração), exibe diálogo nativo na tela
+                if is_alert:
+                    alert_script = f'display alert "{safe_title}" message "{safe_message}" buttons {{"OK"}} default button "OK"'
+                    try:
+                        subprocess.Popen(["osascript", "-e", alert_script])
+                    except Exception:
+                        pass
+
+                # 1.3 Envia também para a Central de Notificações do macOS
+                notif_script = f'display notification "{safe_message}" with title "{safe_title}"'
+                try:
+                    subprocess.Popen(["osascript", "-e", notif_script])
+                except Exception:
+                    pass
+
+                logger.info(f"Notificação nativa macOS disparada: [{title}] {message}")
                 return True
             except Exception as mac_err:
                 logger.error(f"Erro ao disparar notificação no macOS: {mac_err}")

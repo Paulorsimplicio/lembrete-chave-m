@@ -57,11 +57,24 @@ class TrayManager:
             self.on_exit()
 
     def start(self):
-        """Inicia o ícone da bandeja em uma thread secundária (no macOS isso é ignorado por incompatibilidade de threads do Cocoa)."""
-        # No macOS, o AppKit/Cocoa exige que qualquer NSStatusItem rode na main thread,
-        # o que conflita e gera SIGTRAP (NSUpdateCycleInitialize) com a mainloop do Tkinter.
+        """Inicia o ícone da bandeja / status bar."""
+        # No macOS, o AppKit/Cocoa exige que qualquer NSStatusItem rode na main thread.
+        # Por isso, no macOS iniciamos um processo auxiliar leve que roda na sua própria main thread.
         if sys.platform == "darwin":
-            logger.info("Bandeja do sistema (pystray) desativada no macOS para estabilidade nativa.")
+            try:
+                import subprocess
+                if getattr(sys, "frozen", False):
+                    cmd = [sys.executable, "--mac-tray-helper"]
+                else:
+                    cmd = [sys.executable, sys.argv[0], "--mac-tray-helper"]
+                self._helper_proc = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+                logger.info("Processo auxiliar da barra de status (macOS) iniciado com sucesso.")
+            except Exception as e:
+                logger.error(f"Erro ao iniciar processo auxiliar da barra de status no macOS: {e}")
             return
 
         try:
@@ -79,7 +92,20 @@ class TrayManager:
             logger.error(f"Erro ao inicializar ícone da bandeja: {e}")
 
     def stop(self):
-        """Para o ícone da bandeja."""
+        """Para o ícone da bandeja / status bar."""
+        if sys.platform == "darwin":
+            if hasattr(self, "_helper_proc") and self._helper_proc:
+                try:
+                    self._helper_proc.terminate()
+                    self._helper_proc.wait(timeout=1.0)
+                except Exception:
+                    try:
+                        self._helper_proc.kill()
+                    except Exception:
+                        pass
+                self._helper_proc = None
+            return
+
         if self.icon:
             try:
                 self.icon.stop()

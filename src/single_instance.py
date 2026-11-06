@@ -26,11 +26,13 @@ class SingleInstanceManager:
         self,
         on_activate_callback: Optional[Callable] = None,
         on_upgrade_requested_callback: Optional[Callable] = None,
+        on_update_today_callback: Optional[Callable] = None,
         port: int = PORT,
         current_version: str = "1.0.0"
     ):
         self.on_activate_callback = on_activate_callback
         self.on_upgrade_requested_callback = on_upgrade_requested_callback
+        self.on_update_today_callback = on_update_today_callback
         self.port = port
         self.current_version = current_version
         self.server_socket: Optional[socket.socket] = None
@@ -180,6 +182,17 @@ class SingleInstanceManager:
                     if self.on_activate_callback:
                         logger.info("Recebido comando para restaurar janela existente.")
                         self.on_activate_callback()
+                elif data == b"UPDATE_TODAY":
+                    conn.close()
+                    if self.on_update_today_callback:
+                        logger.info("Recebido comando da barra de status para atualizar senha hoje.")
+                        self.on_update_today_callback()
+                elif data == b"SHUTDOWN":
+                    conn.close()
+                    logger.info("Comando de encerramento recebido da barra de status.")
+                    if self.on_upgrade_requested_callback:
+                        self.on_upgrade_requested_callback()
+                    break
                 else:
                     conn.close()
             except Exception:

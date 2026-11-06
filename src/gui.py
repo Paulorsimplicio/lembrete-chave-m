@@ -551,7 +551,8 @@ class MainWindow(ctk.CTk):
         self.notifier.notify(
             title=f"{APP_NAME} Minimizado",
             message="O aplicativo foi minimizado na Dock e continua em execução em segundo plano.",
-            timeout=5
+            timeout=5,
+            is_alert=False
         )
 
     def minimize_to_tray(self):

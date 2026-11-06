@@ -28,6 +28,7 @@ class Application:
         self.single_instance = SingleInstanceManager(
             on_activate_callback=self._on_reactivate_requested,
             on_upgrade_requested_callback=self.shutdown,
+            on_update_today_callback=self._update_today_from_tray,
             current_version=APP_VERSION
         )
         if self.single_instance.is_already_running():
@@ -152,6 +153,12 @@ class Application:
 
 
 def main():
+    # No macOS, se invocado com a flag do helper, executa o ícone da barra de status na thread principal do processo auxiliar
+    if sys.platform == "darwin" and "--mac-tray-helper" in sys.argv:
+        from src.mac_tray import run_mac_tray_helper
+        run_mac_tray_helper()
+        sys.exit(0)
+
     parser = argparse.ArgumentParser(description=f"{APP_NAME} - Foursys Bradesco")
     parser.add_argument(
         "--minimized", "--tray",
