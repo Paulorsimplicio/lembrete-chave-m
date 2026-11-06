@@ -16,7 +16,12 @@ export async function GET() {
     macos: {
       name: 'LembreteChaveM-MacOS.pkg',
       url: `https://github.com/${repo}/releases/latest/download/LembreteChaveM-MacOS.pkg`,
-      os: 'macOS'
+      os: 'macOS (Apple Silicon)'
+    },
+    macos_intel: {
+      name: 'LembreteChaveM-MacOS-Intel.pkg',
+      url: `https://github.com/${repo}/releases/latest/download/LembreteChaveM-MacOS-Intel.pkg`,
+      os: 'macOS (Intel)'
     },
     linux: {
       name: 'LembreteChaveM-Linux.zip',
@@ -85,14 +90,27 @@ export async function GET() {
         } else if (nameLower.includes('mac')) {
           if (nameLower.endsWith('.pkg') || nameLower.endsWith('.zip')) {
             const isVersioned = nameLower.includes('-v');
-            if (!assets.macos.isVersioned || isVersioned) {
-              assets.macos = {
-                name: asset.name,
-                url: asset.browser_download_url,
-                size: asset.size,
-                os: 'macOS',
-                isVersioned
-              };
+            const isIntel = nameLower.includes('intel');
+            if (isIntel) {
+              if (!assets.macos_intel.isVersioned || isVersioned) {
+                assets.macos_intel = {
+                  name: asset.name,
+                  url: asset.browser_download_url,
+                  size: asset.size,
+                  os: 'macOS (Intel)',
+                  isVersioned
+                };
+              }
+            } else {
+              if (!assets.macos.isVersioned || isVersioned) {
+                assets.macos = {
+                  name: asset.name,
+                  url: asset.browser_download_url,
+                  size: asset.size,
+                  os: 'macOS (Apple Silicon)',
+                  isVersioned
+                };
+              }
             }
           }
         } else if (nameLower.includes('linux')) {

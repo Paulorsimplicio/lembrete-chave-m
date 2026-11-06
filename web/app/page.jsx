@@ -9,6 +9,7 @@ export default function Home() {
     assets: {
       windows: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Windows.zip', name: 'LembreteChaveM-Windows.zip' },
       macos: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-MacOS.pkg', name: 'LembreteChaveM-MacOS.pkg' },
+      macos_intel: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-MacOS-Intel.pkg', name: 'LembreteChaveM-MacOS-Intel.pkg' },
       linux: { url: 'https://github.com/Paulorsimplicio/lembrete-chave-m/releases/latest/download/LembreteChaveM-Linux.zip', name: 'LembreteChaveM-Linux.zip' },
     }
   });
@@ -181,22 +182,42 @@ export default function Home() {
             </div>
           </a>
 
-          {/* Card macOS */}
-          <a href={versionData.assets?.macos?.url} className="glass-panel platform-card" id="download-macos">
+          {/* Card macOS Apple Silicon */}
+          <a href={versionData.assets?.macos?.url} className="glass-panel platform-card" id="download-macos-arm">
             <div>
               <div className="platform-header">
                 <div className="platform-icon-box">🍏</div>
                 <div>
-                  <div className="platform-name">macOS</div>
-                  <div className="platform-format">Instalador .pkg</div>
+                  <div className="platform-name">macOS (Apple Silicon)</div>
+                  <div className="platform-format">Instalador .pkg (M1/M2/M3/M4)</div>
                 </div>
               </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                Compatível com Apple Silicon (M1/M2/M3/M4) e Intel. Instalador nativo para /Applications.
+                Compatível com Apple Silicon (M1/M2/M3/M4). Instalador nativo para /Applications.
               </p>
             </div>
             <div className="platform-action">
-              <span>Baixar instalador .pkg</span>
+              <span>Baixar para Apple Silicon</span>
+              <span>↓</span>
+            </div>
+          </a>
+
+          {/* Card macOS Intel */}
+          <a href={versionData.assets?.macos_intel?.url} className="glass-panel platform-card" id="download-macos-intel">
+            <div>
+              <div className="platform-header">
+                <div className="platform-icon-box">💻</div>
+                <div>
+                  <div className="platform-name">macOS (Intel)</div>
+                  <div className="platform-format">Instalador .pkg (Core i5/i7/i9)</div>
+                </div>
+              </div>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                Compatível com MacBooks e iMacs com processador Intel (modelos até 2020).
+              </p>
+            </div>
+            <div className="platform-action">
+              <span>Baixar para Mac Intel</span>
               <span>↓</span>
             </div>
           </a>
