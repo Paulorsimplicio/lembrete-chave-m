@@ -22,6 +22,7 @@ def build():
         "--noconsole",
         f"--icon={icon_arg}",
         f"--add-data=assets{sep}assets",
+        f"--add-data=Manual_de_Uso.html{sep}.",
         "--clean",
         "--noupx",          # UPX desativado para carregamento 2x a 3x mais rápido em SSDs
         "--optimize=2",      # Otimização máxima de bytecode Python (.pyo)
@@ -91,6 +92,16 @@ def build():
         pkg_file = os.path.join("dist", "LembreteChaveM-MacOS.pkg")
         ver_pkg_file = os.path.join("dist", f"LembreteChaveM-MacOS-{ver_tag}.pkg")
         if os.path.exists(app_path):
+            # Incorpora o Manual de Uso dentro da estrutura do pacote .app nativo do macOS
+            manual_file = os.path.abspath("Manual_de_Uso.html")
+            if os.path.exists(manual_file):
+                res_dir = os.path.join(app_path, "Contents", "Resources")
+                macos_dir = os.path.join(app_path, "Contents", "MacOS")
+                os.makedirs(res_dir, exist_ok=True)
+                shutil.copy(manual_file, os.path.join(res_dir, "Manual_de_Uso.html"))
+                shutil.copy(manual_file, os.path.join(macos_dir, "Manual_de_Uso.html"))
+                print("Manual_de_Uso.html incorporado em Contents/Resources e Contents/MacOS")
+
             # Injeta metadata de versão e bundle no Info.plist do .app
             info_plist_path = os.path.join(app_path, "Contents", "Info.plist")
             if os.path.exists(info_plist_path):

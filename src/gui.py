@@ -15,6 +15,9 @@ from src.config import (
     APP_VERSION,
     ICON_PNG,
     ICON_ICO,
+    BASE_DIR,
+    ASSETS_DIR,
+    MANUAL_HTML,
     COLOR_PRIMARY,
     COLOR_ACCENT,
     COLOR_SAFE,
@@ -522,26 +525,36 @@ class MainWindow(ctk.CTk):
     def open_manual(self):
         """Abre o manual de uso do aplicativo no navegador."""
         manual_candidates = [
-            Path(__file__).resolve().parent.parent / "Manual_de_Uso.html",
+            MANUAL_HTML,
+            ASSETS_DIR / "Manual_de_Uso.html",
+            BASE_DIR / "Manual_de_Uso.html",
             Path(sys.executable).parent / "Manual_de_Uso.html",
+            Path(sys.executable).parent / "assets" / "Manual_de_Uso.html",
+            # Estrutura de pacote nativo no macOS (.app/Contents/Resources e .app/Contents/MacOS)
+            Path(sys.executable).parent.parent / "Resources" / "Manual_de_Uso.html",
+            Path(sys.executable).parent.parent / "Resources" / "assets" / "Manual_de_Uso.html",
+            # Modo desenvolvimento / caminhos de projeto
+            Path(__file__).resolve().parent.parent / "Manual_de_Uso.html",
+            Path(__file__).resolve().parent.parent / "assets" / "Manual_de_Uso.html",
             Path.cwd() / "Manual_de_Uso.html",
+            Path.cwd() / "assets" / "Manual_de_Uso.html",
         ]
         for candidate in manual_candidates:
-            if candidate.exists():
+            if candidate and candidate.exists():
                 try:
-                    webbrowser.open(candidate.as_uri())
+                    webbrowser.open(candidate.resolve().as_uri())
                     self.feedback_label.configure(
                         text="📖 Manual de uso aberto no navegador!",
                         text_color="#38bdf8"
                     )
                     return
                 except Exception as e:
-                    logger.error(f"Erro ao abrir manual local: {e}")
+                    logger.error(f"Erro ao abrir manual local ({candidate}): {e}")
 
-        # Fallback online
-        webbrowser.open("https://github.com/Paulorsimplicio/lembrete-chave-m#readme")
+        # Fallback online: abre a visualização do arquivo do manual no repositório (não a raiz com os códigos)
+        webbrowser.open("https://github.com/Paulorsimplicio/lembrete-chave-m/blob/main/Manual_de_Uso.html")
         self.feedback_label.configure(
-            text="📖 Abrindo documentação online...",
+            text="📖 Abrindo manual de uso online...",
             text_color="#38bdf8"
         )
 

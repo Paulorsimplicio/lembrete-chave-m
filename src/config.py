@@ -33,6 +33,7 @@ else:
 ASSETS_DIR = BASE_DIR / "assets"
 ICON_PNG = ASSETS_DIR / "icon.png"
 ICON_ICO = ASSETS_DIR / "icon.ico"
+MANUAL_HTML = ASSETS_DIR / "Manual_de_Uso.html"
 
 # Paleta de cores moderna
 COLOR_PRIMARY = "#0284c7"      # Azul Céu Corporativo
