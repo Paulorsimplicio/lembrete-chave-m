@@ -15,9 +15,10 @@ class TestReminderEngine(unittest.TestCase):
 
     def test_calculate_status_safe(self):
         today = date(2026, 9, 28)
-        # Troca em 20/09/2026:
-        # Dia 29 = 19/10/2026 (Segunda-feira, dia útil)
-        last_change = date(2026, 9, 20)
+        # Troca em 21/09/2026 (Dia 1):
+        # 29º dia inclusivo = 19/10/2026 (Segunda-feira, dia útil)
+        # 30º dia inclusivo (expiração) = 20/10/2026
+        last_change = date(2026, 9, 21)
         status = calculate_status(last_change, cycle_days=30, today=today)
         self.assertTrue(status["has_date"])
         self.assertEqual(status["effective_deadline"], date(2026, 10, 19))
@@ -25,11 +26,22 @@ class TestReminderEngine(unittest.TestCase):
         self.assertEqual(status["days_remaining"], 21)
         self.assertEqual(status["status_code"], "safe")
 
+    def test_inclusive_day_one_on_change_date(self):
+        # Se trocou hoje (01/10/2026 = Dia 1):
+        # 29º dia inclusivo = 29/10/2026 (Quinta, dia útil) -> 28 dias restantes
+        # 30º dia inclusivo = 30/10/2026 (expiração)
+        last_change = date(2026, 10, 1)
+        status = calculate_status(last_change, cycle_days=30, today=last_change)
+        self.assertEqual(status["raw_deadline"], date(2026, 10, 29))
+        self.assertEqual(status["effective_deadline"], date(2026, 10, 29))
+        self.assertEqual(status["expiration_date"], date(2026, 10, 30))
+        self.assertEqual(status["days_remaining"], 28)
+
     def test_deadline_weekend_anticipation(self):
-        # Testando quando o dia 29 cai num sábado
-        # Se última troca = 04/09/2026 (Sexta)
-        # Dia 29 = 03/10/2026 (Sábado) -> Deve antecipar para 02/10/2026 (Sexta-feira)!
-        last_change = date(2026, 9, 4)
+        # Testando quando o 29º dia cai num sábado
+        # Se última troca = 05/09/2026 (Dia 1)
+        # 29º dia inclusivo = 03/10/2026 (Sábado) -> Deve antecipar para 02/10/2026 (Sexta-feira)!
+        last_change = date(2026, 9, 5)
         status = calculate_status(last_change, cycle_days=30, today=date(2026, 9, 28))
         self.assertTrue(status["was_adjusted"])
         self.assertEqual(status["raw_deadline"], date(2026, 10, 3))
@@ -39,28 +51,28 @@ class TestReminderEngine(unittest.TestCase):
         # Limite útil em 03/10/2026 seria Sábado -> vira 02/10/2026 (Sexta)
         # Hoje = 27/09/2026 -> 02/10 - 27/09 = 5 dias
         today = date(2026, 9, 27)
-        last_change = date(2026, 9, 4)
+        last_change = date(2026, 9, 5)
         status = calculate_status(last_change, cycle_days=30, today=today)
         self.assertEqual(status["days_remaining"], 5)
         self.assertEqual(status["status_code"], "warning")
 
     def test_calculate_status_danger_2_days(self):
         today = date(2026, 9, 30)
-        last_change = date(2026, 9, 4) # Limite útil = 02/10/2026 (Sexta)
+        last_change = date(2026, 9, 5) # Limite útil = 02/10/2026 (Sexta)
         status = calculate_status(last_change, cycle_days=30, today=today)
         self.assertEqual(status["days_remaining"], 2)
         self.assertEqual(status["status_code"], "danger")
 
     def test_calculate_status_last_business_day_today(self):
         today = date(2026, 10, 2)
-        last_change = date(2026, 9, 4) # Limite útil = 02/10/2026 (Sexta)
+        last_change = date(2026, 9, 5) # Limite útil = 02/10/2026 (Sexta)
         status = calculate_status(last_change, cycle_days=30, today=today)
         self.assertEqual(status["days_remaining"], 0)
         self.assertEqual(status["status_code"], "today")
 
     def test_calculate_status_overdue(self):
         today = date(2026, 10, 5)
-        last_change = date(2026, 9, 4) # Limite útil = 02/10/2026
+        last_change = date(2026, 9, 5) # Limite útil = 02/10/2026
         status = calculate_status(last_change, cycle_days=30, today=today)
         self.assertLess(status["days_remaining"], 0)
         self.assertEqual(status["status_code"], "overdue")
@@ -70,8 +82,8 @@ class TestReminderEngine(unittest.TestCase):
         test_file = Path(temp_dir.name) / "test_config.json"
         storage = Storage(data_file=test_file)
 
-        # Última troca em 04/09/2026 -> limite útil 02/10/2026
-        storage.set_last_change_date(date(2026, 9, 4))
+        # Última troca em 05/09/2026 (Dia 1) -> limite útil 02/10/2026
+        storage.set_last_change_date(date(2026, 9, 5))
 
         mock_notifier = MagicMock()
         mock_notifier.notify.return_value = True

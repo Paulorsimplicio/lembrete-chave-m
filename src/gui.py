@@ -403,8 +403,9 @@ class MainWindow(ctk.CTk):
                     text_color=COLOR_EXPIRED
                 )
             else:
+                days_label = "dia restante" if days == 1 else "dias restantes"
                 self.days_text_label.configure(
-                    text=f"dias úteis restantes\nPrazo limite: {deadline_str}",
+                    text=f"{days_label}\nPrazo limite: {deadline_str}",
                     text_color="#94a3b8"
                 )
 
@@ -510,11 +511,11 @@ class MainWindow(ctk.CTk):
                 title = alert_info["title"]
                 message = alert_info["message"]
             elif days == 4:
-                title = "Aviso Chave M (4 dias úteis)"
-                message = f"Faltam 4 dias úteis para a data limite de troca da chave M ({deadline_str}). Planeje a troca."
+                title = "Aviso Chave M (4 dias)"
+                message = f"Faltam 4 dias para a data limite de troca da chave M ({deadline_str}). Planeje a troca."
             else:
                 title = f"Lembrete Chave M | Status Seguro ({days} dias)"
-                message = f"Sua chave M está segura por mais {days} dias úteis (data limite útil: {deadline_str})."
+                message = f"Sua chave M está segura por mais {days} dias (data limite: {deadline_str})."
 
         self.notifier.notify(title=title, message=message, timeout=12)
         self.feedback_label.configure(

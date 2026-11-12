@@ -28,7 +28,7 @@ MESSAGES_BY_THRESHOLD = {
     },
     2: {
         "title": "Urgente Chave M (2 dias)",
-        "message": "Faltam apenas 2 dias úteis para a troca da sua chave M! Troque para evitar bloqueio."
+        "message": "Faltam apenas 2 dias para a troca da sua chave M! Troque para evitar bloqueio."
     },
     1: {
         "title": "ALERTA MÁXIMO: Expira Amanhã!",
@@ -48,7 +48,9 @@ def calculate_status(
 ) -> Dict[str, Any]:
     """
     Calcula os dias restantes, status, cor visual e data limite de troca.
-    Regra: A senha expira no 30º dia, portanto o limite seguro é até o 29º dia.
+    Regra (contagem inclusiva — dia da troca conta como Dia 1):
+    A senha expira no 30º dia (+29 dias no calendário), portanto o limite seguro
+    é até o 29º dia (+28 dias no calendário).
     Se o 29º dia cair em final de semana ou feriado nacional, a data limite
     é antecipada para o dia útil anterior.
     """
@@ -71,11 +73,12 @@ def calculate_status(
             "progress": 0.0,
         }
 
-    # Data de expiração técnica (30 dias)
-    expiration_date = last_change_date + timedelta(days=cycle_days)
+    # Data de expiração técnica (30º dia inclusivo: dia da troca conta como Dia 1)
+    expiration_date = last_change_date + timedelta(days=max(0, cycle_days - 1))
 
-    # Data máxima aceitável antes de expirar (dia 29 da contagem)
-    raw_deadline = last_change_date + timedelta(days=MAX_CYCLE_DAY)
+    # Data máxima aceitável antes de expirar (29º dia inclusivo: dia da troca conta como Dia 1)
+    safe_offset = max(0, min(MAX_CYCLE_DAY - 1, cycle_days - 2))
+    raw_deadline = last_change_date + timedelta(days=safe_offset)
 
     # Ajuste para dia útil anterior se sábado, domingo ou feriado
     effective_deadline, was_adjusted, adjustment_reason = get_deadline_business_day(raw_deadline)
@@ -91,7 +94,7 @@ def calculate_status(
     if days_remaining > 5:
         status_code = "safe"
         status_label = "Acesso Seguro"
-        message = f"Sua senha está segura por mais {days_remaining} dias úteis."
+        message = f"Sua senha está segura por mais {days_remaining} dias."
         color = COLOR_SAFE
     elif 3 <= days_remaining <= 5:
         status_code = "warning"
